@@ -122,14 +122,20 @@
     </div>
   </section>
 
-  <!-- Trending PFPs -->
+  <!-- Blockchain Tabs + Trending PFPs -->
   <section class="pfp-section">
     <div class="section-header">
-      <h2><span class="emoji">🔥</span> Trending PFPs</h2>
+      <h2><span class="emoji">🔥</span> Top PFP Collections</h2>
       <a href="pages/leaderboard.html" class="section-link">View All →</a>
     </div>
+    <div class="leaderboard-tabs" style="max-width:1200px; margin:0 auto 20px;">
+      <button class="leaderboard-tab active" onclick="filterChain('all', this)">🌐 All Chains</button>
+      <button class="leaderboard-tab" onclick="filterChain('BTC', this)">₿ Bitcoin</button>
+      <button class="leaderboard-tab" onclick="filterChain('ETH', this)">⟠ Ethereum</button>
+      <button class="leaderboard-tab" onclick="filterChain('SOL', this)">◎ Solana</button>
+    </div>
     <div class="pfp-grid" id="trending-grid">
-      <div class="loading-spinner"><div class="spinner"></div> Loading trending PFPs...</div>
+      <div class="loading-spinner"><div class="spinner"></div> Loading top PFPs...</div>
     </div>
   </section>
 

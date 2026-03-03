@@ -24,26 +24,31 @@ function showToast(message, type = 'success') {
 // Render PFP card HTML
 function renderPfpCard(pfp, rank) {
   const rating = (pfp.ratingAvg || 0).toFixed(1);
-  const stars = '★'.repeat(Math.round(pfp.ratingAvg || 0)) + '☆'.repeat(10 - Math.round(pfp.ratingAvg || 0));
+  const chainBadge = pfp.chain ? `<span class="pfp-card-chain chain-${(pfp.chain||'').toLowerCase()}">${pfp.chain}</span>` : '';
 
   return `
-    <div class="pfp-card" data-id="${pfp.id}" onclick="openPfpModal('${pfp.id}')">
-      <div class="pfp-card-image">
-        <img src="${pfp.imageUrl}" alt="${pfp.title || 'PFP'}" loading="lazy">
+    <div class="pfp-card" data-id="${pfp.id}">
+      <div class="pfp-card-image" onclick="openPfpModal('${pfp.id}')">
+        <img src="${pfp.imageUrl}" alt="${pfp.title || 'PFP'}" loading="lazy" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${pfp.id}'">
         ${pfp.category ? `<span class="pfp-card-badge">${pfp.category}</span>` : ''}
+        ${chainBadge}
         ${rank ? `<span class="pfp-card-rank">${rank}</span>` : ''}
       </div>
       <div class="pfp-card-info">
-        <div class="pfp-card-title">${pfp.title || 'Untitled PFP'}</div>
+        <div class="pfp-card-title" onclick="openPfpModal('${pfp.id}')">${pfp.title || 'Untitled PFP'}</div>
         <div class="pfp-card-meta">
           <div class="pfp-card-rating">
             <span class="star-display">★</span>
             <span class="rating-value">${rating}</span>
           </div>
           <div class="pfp-card-votes">
-            <span class="vote-up" onclick="event.stopPropagation(); quickVote('${pfp.id}', 'up')">▲ ${pfp.upvotes || 0}</span>
-            <span class="vote-down" onclick="event.stopPropagation(); quickVote('${pfp.id}', 'down')">▼ ${pfp.downvotes || 0}</span>
+            <span class="vote-up" onclick="event.stopPropagation(); quickVote('${pfp.id}', 'up')" title="Upvote">▲ ${pfp.upvotes || 0}</span>
+            <span class="vote-down" onclick="event.stopPropagation(); quickVote('${pfp.id}', 'down')" title="Downvote">▼ ${pfp.downvotes || 0}</span>
           </div>
+        </div>
+        <div class="pfp-card-share">
+          <button onclick="event.stopPropagation(); shareToX('${pfp.id}', '${(pfp.title||'PFP').replace(/'/g,'')}', ${rating})" title="Share on X">𝕏</button>
+          <button onclick="event.stopPropagation(); copyPfpLink('${pfp.id}')" title="Copy Link">🔗</button>
         </div>
       </div>
     </div>
@@ -58,6 +63,43 @@ async function quickVote(pfpId, type) {
   } catch (err) {
     showToast('Vote failed', 'error');
   }
+}
+
+// Chain filter for trending grid
+function filterChain(chain, btn) {
+  document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  loadTrendingByChain(chain);
+}
+
+// Load trending PFPs filtered by blockchain chain
+async function loadTrendingByChain(chain) {
+  const grid = document.getElementById('trending-grid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Loading...</div>';
+  try {
+    const pfps = await fetchPfps('score', 150);
+    let filtered = chain === 'all' ? pfps : pfps.filter(p => p.chain === chain);
+    filtered = filtered.slice(0, 50);
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">🎨</span><p>No PFPs found. Upload yours!</p></div>';
+      return;
+    }
+    grid.innerHTML = filtered.map((pfp, i) => renderPfpCard(pfp, i + 1)).join('');
+  } catch (err) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p>Failed to load. Refresh to try again.</p></div>';
+  }
+}
+
+// Share PFP to X (Twitter)
+function shareToX(pfpId, title, rating) {
+  const text = encodeURIComponent(`${title} rated ${rating}/10 on pfp.best 🔥\n\nRate yours → https://pfp.best/#pfp/${pfpId}`);
+  window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'width=550,height=420');
+}
+
+// Copy PFP link to clipboard
+function copyPfpLink(pfpId) {
+  navigator.clipboard.writeText(`https://pfp.best/#pfp/${pfpId}`).then(() => showToast('Link copied!', 'success'));
 }
 
 // PFP Detail Modal
@@ -220,27 +262,7 @@ function toggleMobileMenu() {
 
 // Homepage: Load trending PFPs
 async function loadTrending() {
-  const grid = document.getElementById('trending-grid');
-  if (!grid) return;
-
-  grid.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Loading trending PFPs...</div>';
-
-  try {
-    const pfps = await fetchPfps('score', 12);
-    if (pfps.length === 0) {
-      grid.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-          <span class="empty-icon">🎨</span>
-          <p>No PFPs yet! Upload yours to be the first on the leaderboard.</p>
-        </div>
-      `;
-      return;
-    }
-    grid.innerHTML = pfps.map((pfp, i) => renderPfpCard(pfp, i + 1)).join('');
-  } catch (err) {
-    console.error('Failed to load trending:', err);
-    grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><p>Failed to load. Refresh to try again.</p></div>';
-  }
+  await loadTrendingByChain('all');
 }
 
 // Homepage: Load PFP of the Day

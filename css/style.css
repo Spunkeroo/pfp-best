@@ -1423,6 +1423,110 @@ h1, h2, h3, h4 {
 }
 
 /* ============================================
+   Chain Badges
+   ============================================ */
+.pfp-card-chain {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.chain-btc {
+  background: rgba(247, 147, 26, 0.2);
+  color: #f7931a;
+  border: 1px solid rgba(247, 147, 26, 0.4);
+}
+
+.chain-eth {
+  background: rgba(98, 126, 234, 0.2);
+  color: #627eea;
+  border: 1px solid rgba(98, 126, 234, 0.4);
+}
+
+.chain-sol {
+  background: rgba(153, 69, 255, 0.2);
+  color: #9945ff;
+  border: 1px solid rgba(153, 69, 255, 0.4);
+}
+
+/* When rank badge and chain badge coexist */
+.pfp-card-image .pfp-card-chain {
+  right: auto;
+  left: 10px;
+  top: auto;
+  bottom: 10px;
+}
+
+/* ============================================
+   Card Share Buttons
+   ============================================ */
+.pfp-card-share {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.pfp-card-share button {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 5px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.pfp-card-share button:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--neon-purple);
+}
+
+/* ============================================
+   Vote Button Improvements
+   ============================================ */
+.vote-up, .vote-down {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.vote-up {
+  color: var(--text-muted);
+}
+
+.vote-up:hover {
+  color: var(--neon-cyan);
+  background: rgba(0, 245, 212, 0.1);
+}
+
+.vote-down {
+  color: var(--text-muted);
+}
+
+.vote-down:hover {
+  color: var(--neon-pink);
+  background: rgba(255, 0, 110, 0.1);
+}
+
+/* ============================================
    Canvas (share card generation)
    ============================================ */
 #share-canvas {
