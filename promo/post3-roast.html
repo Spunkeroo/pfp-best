@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>PFP.best Roast</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  body {
+    width: 1200px;
+    height: 675px;
+    background: #0a0a0f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+  .glow1 {
+    width: 500px; height: 500px;
+    background: #ff006e;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.3;
+  }
+  .glow2 {
+    width: 350px; height: 350px;
+    background: #bf5af2;
+    bottom: -100px; left: 100px;
+    opacity: 0.25;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px 80px;
+  }
+  .headline {
+    font-size: 46px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+  .headline em {
+    font-style: normal;
+    color: #ff006e;
+  }
+  .roast-card {
+    background: rgba(255,0,110,0.08);
+    border: 2px solid rgba(255,0,110,0.3);
+    border-radius: 20px;
+    padding: 28px 50px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .default-pfp {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #36393f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    border: 3px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .roast-info {
+    text-align: left;
+  }
+  .roast-score {
+    font-size: 52px;
+    font-weight: 900;
+    color: #ff006e;
+    line-height: 1;
+  }
+  .roast-votes {
+    font-size: 20px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 6px;
+  }
+  .subtext {
+    font-size: 26px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.4;
+  }
+  .subtext span {
+    color: #00f5d4;
+  }
+  .watermark {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+  <div class="content">
+    <div class="headline">Your default Discord PFP says <em>a lot</em> about you 😬</div>
+    <div class="roast-card">
+      <div class="default-pfp">🗿</div>
+      <div class="roast-info">
+        <div class="roast-score">1.2/10</div>
+        <div class="roast-votes">847 people agree</div>
+      </div>
+    </div>
+    <div class="subtext">Upload yours. Get rated. <span>Get roasted.</span></div>
+  </div>
+  <div class="watermark">pfp.best</div>
+</body>
+</html>

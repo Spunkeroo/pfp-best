@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>PFP.best Leaderboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  body {
+    width: 1200px;
+    height: 675px;
+    background: #0a0a0f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+  }
+  .glow1 {
+    width: 600px; height: 600px;
+    background: #bf5af2;
+    top: -200px; right: -100px;
+  }
+  .glow2 {
+    width: 400px; height: 400px;
+    background: #00f5d4;
+    bottom: -150px; left: -50px;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 40px 80px;
+  }
+  .headline {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 36px;
+  }
+  .headline span {
+    background: linear-gradient(135deg, #fee440, #ff006e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .leaderboard {
+    display: flex;
+    gap: 32px;
+    align-items: flex-end;
+    margin-bottom: 36px;
+  }
+  .slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .slot-avatar {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 900;
+    position: relative;
+  }
+  .slot-1 .slot-avatar {
+    width: 160px; height: 160px;
+    background: linear-gradient(135deg, #fee440 0%, #ff006e 100%);
+    border: 4px solid #fee440;
+    font-size: 42px;
+  }
+  .slot-2 .slot-avatar {
+    width: 130px; height: 130px;
+    background: linear-gradient(135deg, #bf5af2 0%, #00f5d4 100%);
+    border: 4px solid #bf5af2;
+  }
+  .slot-3 .slot-avatar {
+    width: 130px; height: 130px;
+    background: linear-gradient(135deg, #00f5d4 0%, #bf5af2 100%);
+    border: 4px solid #00f5d4;
+  }
+  .slot-rank {
+    font-size: 20px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+  }
+  .slot-1 .slot-rank { color: #fee440; }
+  .slot-2 .slot-rank { color: #bf5af2; }
+  .slot-3 .slot-rank { color: #00f5d4; }
+  .slot-rating {
+    font-size: 28px;
+    font-weight: 900;
+  }
+  .slot-1 .slot-rating {
+    background: linear-gradient(135deg, #fee440, #ff006e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .slot-2 .slot-rating {
+    color: #bf5af2;
+  }
+  .slot-3 .slot-rating {
+    color: #00f5d4;
+  }
+  .crown {
+    font-size: 32px;
+    margin-bottom: -8px;
+  }
+  .subtext {
+    font-size: 26px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+  }
+  .watermark {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+  <div class="content">
+    <div class="headline">Top Rated PFPs This Week <span>🏆</span></div>
+    <div class="leaderboard">
+      <div class="slot slot-2">
+        <div class="slot-rank">#2</div>
+        <div class="slot-avatar">😎</div>
+        <div class="slot-rating">9.4/10</div>
+      </div>
+      <div class="slot slot-1">
+        <div class="crown">👑</div>
+        <div class="slot-rank">#1</div>
+        <div class="slot-avatar">🔥</div>
+        <div class="slot-rating">9.8/10</div>
+      </div>
+      <div class="slot slot-3">
+        <div class="slot-rank">#3</div>
+        <div class="slot-avatar">💎</div>
+        <div class="slot-rating">9.1/10</div>
+      </div>
+    </div>
+    <div class="subtext">Can your PFP crack the top 10?</div>
+  </div>
+  <div class="watermark">pfp.best</div>
+</body>
+</html>

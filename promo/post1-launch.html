@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>PFP.best Launch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  body {
+    width: 1200px;
+    height: 675px;
+    background: #0a0a0f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+  }
+  .glow1 {
+    width: 500px; height: 500px;
+    background: #bf5af2;
+    top: -150px; left: -100px;
+  }
+  .glow2 {
+    width: 400px; height: 400px;
+    background: #00f5d4;
+    bottom: -100px; right: -50px;
+  }
+  .glow3 {
+    width: 300px; height: 300px;
+    background: #ff006e;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.15;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px 80px;
+  }
+  .headline {
+    font-size: 64px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 30px;
+  }
+  .headline span {
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .rating-box {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(191,90,242,0.4);
+    border-radius: 24px;
+    padding: 24px 60px;
+    margin-bottom: 30px;
+    display: inline-block;
+  }
+  .rating-score {
+    font-size: 96px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff006e, #fee440);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .rating-label {
+    font-size: 20px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .subtext {
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 0;
+  }
+  .watermark {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+  }
+  .fire-row {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+  <div class="bg-glow glow3"></div>
+  <div class="content">
+    <div class="headline">Your PFP just got rated <span>💀</span></div>
+    <div class="rating-box">
+      <div class="fire-row">🔥🔥🔥</div>
+      <div class="rating-score">2.3/10</div>
+      <div class="rating-label">Community Rating</div>
+    </div>
+    <div class="subtext">Think yours is better? Prove it.</div>
+  </div>
+  <div class="watermark">pfp.best</div>
+</body>
+</html>

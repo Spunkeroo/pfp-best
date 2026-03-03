@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>PFP Rating Challenge</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  body {
+    width: 1200px;
+    height: 675px;
+    background: #0a0a0f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+  .glow1 {
+    width: 450px; height: 450px;
+    background: #bf5af2;
+    top: -80px; left: -80px;
+    opacity: 0.35;
+  }
+  .glow2 {
+    width: 450px; height: 450px;
+    background: #00f5d4;
+    bottom: -80px; right: -80px;
+    opacity: 0.3;
+  }
+  .glow3 {
+    width: 300px; height: 300px;
+    background: #fee440;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.1;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px 80px;
+  }
+  .headline {
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #fee440, #ff006e, #bf5af2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 0;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 18px 36px;
+    min-width: 600px;
+  }
+  .step-num {
+    font-size: 18px;
+    font-weight: 900;
+    color: #0a0a0f;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: left;
+  }
+  .step:nth-child(1) .step-text { color: #bf5af2; }
+  .step:nth-child(2) .step-text { color: #00f5d4; }
+  .step:nth-child(3) .step-text { color: #fee440; }
+  .watermark {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+  <div class="bg-glow glow3"></div>
+  <div class="content">
+    <div class="headline">PFP RATING CHALLENGE 🔥</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Upload your PFP</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Get rated by strangers</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Share your score (or don't 💀)</div>
+      </div>
+    </div>
+  </div>
+  <div class="watermark">pfp.best</div>
+</body>
+</html>

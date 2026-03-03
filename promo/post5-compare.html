@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>PFP.best Compare</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+  body {
+    width: 1200px;
+    height: 675px;
+    background: #0a0a0f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+  .glow1 {
+    width: 400px; height: 400px;
+    background: #ff006e;
+    top: 0; left: 100px;
+    opacity: 0.2;
+  }
+  .glow2 {
+    width: 400px; height: 400px;
+    background: #00f5d4;
+    top: 0; right: 100px;
+    opacity: 0.2;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px 60px;
+  }
+  .comparison {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 36px;
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .side-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+  }
+  .bad .side-avatar {
+    background: #36393f;
+    border: 4px solid rgba(255,0,110,0.5);
+    box-shadow: 0 0 40px rgba(255,0,110,0.2);
+  }
+  .good .side-avatar {
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    border: 4px solid rgba(0,245,212,0.6);
+    box-shadow: 0 0 40px rgba(0,245,212,0.3);
+  }
+  .side-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+  .side-score {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .bad .side-score {
+    color: #ff006e;
+  }
+  .good .side-score {
+    color: #00f5d4;
+  }
+  .vs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .vs-text {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff006e, #fee440);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .arrow {
+    font-size: 48px;
+    color: #fee440;
+  }
+  .bottom-text {
+    text-align: center;
+  }
+  .tagline {
+    font-size: 34px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta {
+    font-size: 22px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 700;
+  }
+  .cta span {
+    color: #00f5d4;
+  }
+  .watermark {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #bf5af2, #00f5d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
+  <div class="content">
+    <div class="comparison">
+      <div class="side bad">
+        <div class="side-label">Default PFP</div>
+        <div class="side-avatar">🗿</div>
+        <div class="side-score">1.4/10</div>
+      </div>
+      <div class="vs">
+        <div class="arrow">→</div>
+        <div class="vs-text">VS</div>
+        <div class="arrow">←</div>
+      </div>
+      <div class="side good">
+        <div class="side-label">Custom PFP</div>
+        <div class="side-avatar">🎨</div>
+        <div class="side-score">9.7/10</div>
+      </div>
+    </div>
+    <div class="bottom-text">
+      <div class="tagline">Level up your online presence</div>
+      <div class="cta">Rate yours free at <span>pfp.best</span></div>
+    </div>
+  </div>
+  <div class="watermark">pfp.best</div>
+</body>
+</html>
