@@ -47,7 +47,15 @@
     <button class="leaderboard-tab" data-tab="controversial">💀 Controversial</button>
   </div>
 
-  <!-- Filters -->
+  <!-- Chain Filter -->
+  <div class="leaderboard-tabs" style="margin-top:-8px;">
+    <button class="leaderboard-tab active" data-chain="all">🌐 All Chains</button>
+    <button class="leaderboard-tab" data-chain="BTC">₿ Bitcoin</button>
+    <button class="leaderboard-tab" data-chain="ETH">⟠ Ethereum</button>
+    <button class="leaderboard-tab" data-chain="SOL">◎ Solana</button>
+  </div>
+
+  <!-- Category Filter -->
   <div class="filter-bar">
     <select class="filter-select" id="filter-category">
       <option value="all">All Categories</option>
@@ -119,7 +127,7 @@
   <canvas id="share-canvas"></canvas>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <!-- Storage SDK removed - using base64 in DB -->
   <script src="../js/firebase.js"></script>
   <script src="../js/share.js"></script>
   <script src="../js/app.js"></script>
