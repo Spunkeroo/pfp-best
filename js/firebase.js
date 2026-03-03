@@ -12,7 +12,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const storage = firebase.storage();
 
 // Database references (namespaced under pfpbest/)
 const pfpsRef = db.ref('pfpbest/pfps');
@@ -40,15 +39,49 @@ function getFingerprint() {
   return fp;
 }
 
-// Upload PFP image to Firebase Storage
+// Upload PFP image — compress and store as base64 in DB (no Storage auth needed)
 async function uploadImage(file) {
   const id = generateId();
-  const ext = file.name.split('.').pop().toLowerCase();
-  const ref = storage.ref(`pfps/${id}.${ext}`);
 
-  const snapshot = await ref.put(file);
-  const url = await snapshot.ref.getDownloadURL();
-  return { id, url };
+  // Resize and compress image to keep DB size reasonable
+  const dataUrl = await compressImage(file, 400, 0.8);
+  return { id, url: dataUrl };
+}
+
+// Compress image to max dimension and quality
+function compressImage(file, maxSize, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let w = img.width;
+        let h = img.height;
+
+        // Scale down if needed
+        if (w > maxSize || h > maxSize) {
+          if (w > h) {
+            h = Math.round(h * maxSize / w);
+            w = maxSize;
+          } else {
+            w = Math.round(w * maxSize / h);
+            h = maxSize;
+          }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/webp', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 // Create PFP entry in database
@@ -100,7 +133,6 @@ async function ratePfp(pfpId, rating) {
   await pfpsRef.child(pfpId).transaction(pfp => {
     if (pfp) {
       if (oldRating) {
-        // Adjust: remove old rating, add new
         pfp.ratingSum = (pfp.ratingSum || 0) - oldRating.rating + rating;
       } else {
         pfp.ratingSum = (pfp.ratingSum || 0) + rating;
@@ -120,7 +152,7 @@ async function votePfp(pfpId, type) {
   const existing = await db.ref('pfpbest/' + voteKey).once('value');
   const oldVote = existing.val();
 
-  if (oldVote === type) return; // Already voted same way
+  if (oldVote === type) return;
 
   await db.ref('pfpbest/' + voteKey).set(type);
 
@@ -171,7 +203,6 @@ function calculateScore(pfp) {
 
   if (total === 0) return ratingAvg;
 
-  // Wilson score lower bound
   const p = upvotes / total;
   const z = 1.96;
   const n = total;
@@ -188,12 +219,11 @@ async function fetchPfps(orderBy, limit = 20, category = null) {
   const pfps = [];
   snap.forEach(child => {
     const pfp = child.val();
-    if (!category || pfp.category === category) {
+    if (!category || category === 'all' || pfp.category === category) {
       pfps.push(pfp);
     }
   });
 
-  // Reverse for descending order
   return pfps.reverse();
 }
 

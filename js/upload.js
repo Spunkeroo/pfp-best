@@ -145,7 +145,7 @@
         showToast('Upload failed. Please try again.', 'error');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit PFP for Rating';
+        submitBtn.textContent = 'Submit PFP for Rating ⚡';
       }
     });
   }
