@@ -1,12 +1,12 @@
 // Firebase Configuration for pfp.best
 const firebaseConfig = {
-  apiKey: "AIzaSyBk9X0jZ4fV5Gq8KmKqVhN3qL7oFmXxhQo",
-  authDomain: "pfp-best.firebaseapp.com",
-  databaseURL: "https://pfp-best-default-rtdb.firebaseio.com",
-  projectId: "pfp-best",
-  storageBucket: "pfp-best.firebasestorage.app",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:0000000000000000000000"
+  apiKey: "AIzaSyBXAqOFYo8_lWPYTzSLqvtPYClDqrlih9Q",
+  authDomain: "predict-network-ec767.firebaseapp.com",
+  databaseURL: "https://predict-network-ec767-default-rtdb.firebaseio.com",
+  projectId: "predict-network-ec767",
+  storageBucket: "predict-network-ec767.firebasestorage.app",
+  messagingSenderId: "487118700387",
+  appId: "1:487118700387:web:2bae41728d3a6e3b515d56"
 };
 
 // Initialize Firebase
@@ -14,11 +14,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const storage = firebase.storage();
 
-// Database references
-const pfpsRef = db.ref('pfps');
-const ratingsRef = db.ref('ratings');
-const commentsRef = db.ref('comments');
-const statsRef = db.ref('stats');
+// Database references (namespaced under pfpbest/)
+const pfpsRef = db.ref('pfpbest/pfps');
+const ratingsRef = db.ref('pfpbest/ratings');
+const commentsRef = db.ref('pfpbest/comments');
+const statsRef = db.ref('pfpbest/stats');
 
 // Helper: Generate short unique ID
 function generateId() {
@@ -117,12 +117,12 @@ async function ratePfp(pfpId, rating) {
 async function votePfp(pfpId, type) {
   const fp = getFingerprint();
   const voteKey = `votes/${pfpId}_${fp}`;
-  const existing = await db.ref(voteKey).once('value');
+  const existing = await db.ref('pfpbest/' + voteKey).once('value');
   const oldVote = existing.val();
 
   if (oldVote === type) return; // Already voted same way
 
-  await db.ref(voteKey).set(type);
+  await db.ref('pfpbest/' + voteKey).set(type);
 
   await pfpsRef.child(pfpId).transaction(pfp => {
     if (pfp) {
