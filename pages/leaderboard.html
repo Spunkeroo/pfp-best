@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PFP Leaderboard — Top Rated Profile Pictures | pfp.best</title>
+  <meta name="description" content="See the top-rated profile pictures. Browse by top rated, most roasted, rising, and controversial. Find the best PFPs of the day.">
+  <meta name="keywords" content="best pfp, top rated pfp, pfp leaderboard, most popular pfp, trending pfp">
+  <link rel="canonical" href="https://pfp.best/pages/leaderboard.html">
+  <meta property="og:title" content="PFP Leaderboard — pfp.best">
+  <meta property="og:description" content="See the top-rated profile pictures on the internet.">
+  <meta property="og:image" content="https://pfp.best/assets/og-image.png">
+  <meta property="og:url" content="https://pfp.best/pages/leaderboard.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="../" class="nav-logo">pfp<span>.best</span></a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+        <li><a href="pfp-ideas.html">PFP Ideas</a></li>
+        <li><a href="../#upload-zone" class="nav-upload-btn">Upload PFP</a></li>
+      </ul>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <h1>🏆 PFP <span class="gradient-text">Leaderboard</span></h1>
+    <p>The most rated, most roasted, and most loved profile pictures on the internet.</p>
+  </section>
+
+  <!-- Tabs -->
+  <div class="leaderboard-tabs">
+    <button class="leaderboard-tab active" data-tab="top-rated">⭐ Top Rated</button>
+    <button class="leaderboard-tab" data-tab="most-roasted">🔥 Most Roasted</button>
+    <button class="leaderboard-tab" data-tab="rising">📈 Rising</button>
+    <button class="leaderboard-tab" data-tab="controversial">💀 Controversial</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <select class="filter-select" id="filter-category">
+      <option value="all">All Categories</option>
+      <option value="anime">🎌 Anime</option>
+      <option value="gaming">🎮 Gaming</option>
+      <option value="aesthetic">✨ Aesthetic</option>
+      <option value="funny">😂 Funny</option>
+      <option value="dark">🖤 Dark</option>
+      <option value="minimalist">⚪ Minimalist</option>
+    </select>
+  </div>
+
+  <!-- Grid -->
+  <section class="pfp-section">
+    <div class="pfp-grid" id="leaderboard-grid">
+      <div class="loading-spinner"><div class="spinner"></div> Loading leaderboard...</div>
+    </div>
+  </section>
+
+  <!-- Affiliate -->
+  <section class="affiliate-banner">
+    <div class="affiliate-card">
+      <div class="affiliate-card-text">
+        <h4>🎨 Want a top-tier PFP?</h4>
+        <p>Commission a professional artist on Fiverr to create your winning profile picture</p>
+      </div>
+      <a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener" class="affiliate-cta">Get Custom PFP →</a>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="pfp-modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>PFP Details</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="nav-logo">pfp<span>.best</span></span>
+        <p>The ultimate PFP rating platform.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Browse</h4>
+        <ul>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="best-anime-pfp.html">Anime PFPs</a></li>
+          <li><a href="best-discord-pfp.html">Discord PFPs</a></li>
+          <li><a href="best-gaming-pfp.html">Gaming PFPs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="https://www.canva.com/pro/" target="_blank" rel="noopener">Make a PFP</a></li>
+          <li><a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener">Custom PFP</a></li>
+          <li><a href="https://www.midjourney.com/" target="_blank" rel="noopener">AI PFP Generator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 pfp.best</div>
+  </footer>
+
+  <canvas id="share-canvas"></canvas>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/share.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/leaderboard.js"></script>
+</body>
+</html>
