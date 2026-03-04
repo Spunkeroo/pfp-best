@@ -235,20 +235,19 @@ function calculateScore(pfp) {
   return (wilson * 5 + ratingAvg) / 2;
 }
 
-// Fetch PFPs with ordering
+// Fetch PFPs — full scan + client-side sort (no index required)
 async function fetchPfps(orderBy, limit = 20, category = null) {
-  let query = pfpsRef.orderByChild(orderBy).limitToLast(limit);
-
-  const snap = await query.once('value');
+  const snap = await pfpsRef.once('value');
   const pfps = [];
   snap.forEach(child => {
     const pfp = child.val();
+    if (!pfp || !pfp.id || !pfp.imageUrl) return;
     if (!category || category === 'all' || pfp.category === category) {
       pfps.push(pfp);
     }
   });
-
-  return pfps.reverse();
+  pfps.sort((a, b) => (b[orderBy] || 0) - (a[orderBy] || 0));
+  return pfps.slice(0, limit);
 }
 
 // Fetch single PFP
