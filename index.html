@@ -519,6 +519,64 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
       + '</div></div></div>';
   }
 
+  function makeCard(pfp) {
+    var card = document.createElement('div');
+    card.className = 'pfp-card';
+    card.onclick = function() { if (typeof openPfpModal === 'function') openPfpModal(pfp.id); };
+
+    var chain = pfp.chain || '';
+    var chainColor = {BTC:'#ff9900',ETH:'#6370ff',SOL:'#9945ff',art:'#00f5d4'}[chain] || '#888';
+    var title = (pfp.title || 'Untitled PFP').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var rating = (pfp.ratingAvg || 0).toFixed(1);
+
+    // Image wrapper
+    var imgWrap = document.createElement('div');
+    imgWrap.className = 'pfp-card-image';
+
+    var img = document.createElement('img');
+    img.alt = title;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.onerror = function() { this.src = 'https://api.dicebear.com/7.x/shapes/svg?seed=' + pfp.id; };
+    img.src = pfp.imageUrl; // set directly — avoids parsing base64 in innerHTML
+    imgWrap.appendChild(img);
+
+    if (chain) {
+      var badge = document.createElement('span');
+      badge.className = 'pfp-card-chain';
+      badge.style.cssText = 'position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.75);border-radius:5px;padding:2px 6px;font-size:.65rem;font-weight:700;color:'+chainColor;
+      badge.textContent = chain;
+      imgWrap.appendChild(badge);
+    }
+    card.appendChild(imgWrap);
+
+    // Info
+    var info = document.createElement('div');
+    info.className = 'pfp-card-info';
+    info.innerHTML = '<div class="pfp-card-title">'+title+'</div>'
+      + '<div class="pfp-card-meta">'
+      + '<div class="pfp-card-rating"><span style="color:#ffd60a">★</span> <span class="rating-value">'+rating+'</span></div>'
+      + '<div class="pfp-card-votes">'
+      + '<span class="vote-up">▲ '+(pfp.upvotes||0)+'</span>'
+      + '<span class="vote-down">▼ '+(pfp.downvotes||0)+'</span>'
+      + '</div></div>'
+      + '<div class="pfp-card-share">'
+      + '<button>𝕏</button>'
+      + '<button>🔗</button>'
+      + '</div>';
+
+    // Wire vote/share buttons after innerHTML set
+    var btns = info.querySelectorAll('.pfp-card-votes span');
+    btns[0].onclick = function(e){ e.stopPropagation(); if(typeof quickVote==='function') quickVote(pfp.id,'up'); };
+    btns[1].onclick = function(e){ e.stopPropagation(); if(typeof quickVote==='function') quickVote(pfp.id,'down'); };
+    var shareBtns = info.querySelectorAll('.pfp-card-share button');
+    shareBtns[0].onclick = function(e){ e.stopPropagation(); if(typeof shareToX==='function') shareToX(pfp.id, pfp.title||'PFP', rating); };
+    shareBtns[1].onclick = function(e){ e.stopPropagation(); if(typeof copyPfpLink==='function') copyPfpLink(pfp.id); };
+
+    card.appendChild(info);
+    return card;
+  }
+
   function loadCommunity() {
     if (!grid) return;
     fetch(DB)
@@ -528,14 +586,17 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
         var pfps = Object.values(data).filter(function(p) {
           return p && p.id && p.imageUrl && (!p.uploadedBy || !p.uploadedBy.startsWith('seed_'));
         });
-        // Sort: highest rated first, then newest
+        // Sort: highest rated first, then newest; cap at 30
         pfps.sort(function(a,b){ return (b.ratingAvg||0)-(a.ratingAvg||0) || (b.uploadedAt||0)-(a.uploadedAt||0); });
+        pfps = pfps.slice(0, 30);
         if (pfps.length === 0) {
           grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><span class="empty-icon">📸</span><p>Be the first to upload!</p></div>';
           return;
         }
-        if (countEl) countEl.textContent = pfps.length + ' photos from the community';
-        grid.innerHTML = pfps.map(renderCard).join('');
+        if (countEl) countEl.textContent = Object.values(data).filter(function(p){ return p && p.id && (!p.uploadedBy || !p.uploadedBy.startsWith('seed_')); }).length + ' community uploads';
+        // Render cards via DOM (no giant innerHTML dump of base64 data)
+        grid.innerHTML = '';
+        pfps.forEach(function(pfp) { grid.appendChild(makeCard(pfp)); });
         // Update stat
         var statEl = document.getElementById('stat-total');
         if (statEl) statEl.textContent = Object.keys(data).length;
