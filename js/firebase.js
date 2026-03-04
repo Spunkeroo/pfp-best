@@ -18,6 +18,7 @@ const pfpsRef = db.ref('pfpbest/pfps');
 const ratingsRef = db.ref('pfpbest/ratings');
 const commentsRef = db.ref('pfpbest/comments');
 const statsRef = db.ref('pfpbest/stats');
+const bannedRef = db.ref('pfpbest/banned');
 
 // Helper: Generate short unique ID
 function generateId() {
@@ -37,6 +38,28 @@ function getFingerprint() {
     localStorage.setItem('pfp_fp', fp);
   }
   return fp;
+}
+
+// Safe Firebase key — remove characters Firebase keys can't contain
+function safeFpKey(fp) {
+  return fp.replace(/[.#$[\]/]/g, '_');
+}
+
+// Check if the current fingerprint is banned
+async function isBanned() {
+  const fp = getFingerprint();
+  const snap = await bannedRef.child(safeFpKey(fp)).once('value');
+  return snap.val() !== null;
+}
+
+// Permanently ban the current fingerprint
+async function banFingerprint(reason) {
+  const fp = getFingerprint();
+  await bannedRef.child(safeFpKey(fp)).set({
+    reason: reason || 'policy_violation',
+    fp,
+    banned_at: firebase.database.ServerValue.TIMESTAMP
+  });
 }
 
 // Upload PFP image — compress and store as base64 in DB (no Storage auth needed)
