@@ -26,19 +26,20 @@ function showToast(message, type = 'success') {
 function renderPfpCard(pfp, rank) {
   const rating = (pfp.ratingAvg || 0).toFixed(1);
   const chain = pfp.chain || '';
-  const chainBadge = chain ? `<span class="pfp-card-chain chain-${chain.toLowerCase()}">${chain}</span>` : '';
+  const safeChain = escapeHtml(chain);
+  const chainBadge = chain ? `<span class="pfp-card-chain chain-${escapeHtml(chain.toLowerCase())}">${safeChain}</span>` : '';
   const safeTitle = (pfp.title || 'PFP').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
   return `
     <div class="pfp-card" data-id="${pfp.id}">
       <div class="pfp-card-image" onclick="openPfpModal('${pfp.id}')">
         <img src="${pfp.imageUrl}" alt="${safeTitle}" loading="lazy" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${pfp.id}'">
-        ${pfp.category ? `<span class="pfp-card-badge">${pfp.category}</span>` : ''}
+        ${pfp.category ? `<span class="pfp-card-badge">${escapeHtml(pfp.category)}</span>` : ''}
         ${chainBadge}
         ${rank ? `<span class="pfp-card-rank">${rank}</span>` : ''}
       </div>
       <div class="pfp-card-info">
-        <div class="pfp-card-title" onclick="openPfpModal('${pfp.id}')" style="cursor:pointer">${pfp.title || 'Untitled PFP'}</div>
+        <div class="pfp-card-title" onclick="openPfpModal('${pfp.id}')" style="cursor:pointer">${escapeHtml(pfp.title || 'Untitled PFP')}</div>
         <div class="pfp-card-meta">
           <div class="pfp-card-rating">
             <span class="star-display">★</span>
@@ -128,17 +129,18 @@ async function openPfpModal(pfpId) {
   const comments = await getComments(pfpId);
   const rating = (pfp.ratingAvg || 0).toFixed(1);
   const chain = pfp.chain || '';
-  const chainLabel = chain ? `<span class="pfp-card-chain chain-${chain.toLowerCase()}" style="position:static;display:inline-block;margin-right:6px;">${chain}</span>` : '';
+  const safeModalChain = escapeHtml(chain);
+  const chainLabel = chain ? `<span class="pfp-card-chain chain-${escapeHtml(chain.toLowerCase())}" style="position:static;display:inline-block;margin-right:6px;">${safeModalChain}</span>` : '';
 
   const modalBody = modal.querySelector('.modal-body');
   modalBody.innerHTML = `
     <div class="modal-pfp-image">
-      <img src="${pfp.imageUrl}" alt="${pfp.title || 'PFP'}" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${pfpId}'">
+      <img src="${pfp.imageUrl}" alt="${escapeHtml(pfp.title || 'PFP')}" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${pfpId}'">
     </div>
 
-    <h3 style="text-align:center; margin-bottom:8px;">${pfp.title || 'Untitled PFP'}</h3>
+    <h3 style="text-align:center; margin-bottom:8px;">${escapeHtml(pfp.title || 'Untitled PFP')}</h3>
     <p style="text-align:center; color:var(--text-muted); margin-bottom:20px; font-size:0.85rem;">
-      ${chainLabel} ${pfp.category || 'other'} · ${pfp.ratingCount || 0} ratings · ${(pfp.upvotes || 0) - (pfp.downvotes || 0)} net votes
+      ${chainLabel} ${escapeHtml(pfp.category || 'other')} · ${pfp.ratingCount || 0} ratings · ${(pfp.upvotes || 0) - (pfp.downvotes || 0)} net votes
     </p>
 
     <div class="rating-stars" id="modal-stars">

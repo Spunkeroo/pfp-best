@@ -27,6 +27,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https: https://api.dicebear.com; connect-src 'self' https://*.firebaseio.com https://firebasestorage.googleapis.com https://nsfwjs.com https://cdn.jsdelivr.net; frame-ancestors 'none';">
+
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
 
@@ -150,6 +153,11 @@
     </div>
   </section>
 
+  <!-- Ad Slot: Banner -->
+  <section style="max-width:1200px; margin:0 auto; padding:0 20px 20px;">
+    <div data-ad-slot="banner"></div>
+  </section>
+
   <!-- Create Your Own Banner -->
   <section class="affiliate-banner">
     <div class="affiliate-card">
@@ -222,6 +230,9 @@
   <!-- TensorFlow.js + NSFWJS (content moderation — must load before upload.js) -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/nsfwjs@4.1.0/dist/nsfwjs.min.js"></script>
+
+  <!-- Ad System -->
+  <script src="js/ad-embed.js"></script>
 
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>

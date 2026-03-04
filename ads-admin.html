@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad Manager — SpunkArt Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #12121a;
+      --card: #1a1a2e;
+      --card2: #22223a;
+      --border: #2a2a3e;
+      --purple: #bf5af2;
+      --cyan: #00f5d4;
+      --pink: #ff006e;
+      --yellow: #fee440;
+      --green: #30d158;
+      --text: #f0f0f0;
+      --muted: #6b6b80;
+      --secondary: #a0a0b8;
+      --radius: 12px;
+      --grad: linear-gradient(135deg, #bf5af2, #00f5d4);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { color: var(--cyan); text-decoration: none; }
+
+    /* ── Login Screen ───────────────────────────────── */
+    #login-screen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .login-box {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      padding: 48px 40px; width: 100%; max-width: 420px;
+      box-shadow: 0 0 60px rgba(191,90,242,0.1);
+    }
+    .login-logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 800;
+      background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; text-align: center; margin-bottom: 8px; }
+    .login-sub { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--secondary);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .field input {
+      width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+      padding: 12px 16px; border-radius: 10px; font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(191,90,242,0.1); }
+    .btn-primary {
+      width: 100%; background: var(--grad); color: #000; font-weight: 700; font-size: 1rem;
+      padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-family: inherit;
+      transition: opacity 0.2s, transform 0.2s; margin-top: 8px;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .login-err { color: var(--pink); font-size: 0.85rem; text-align: center; margin-top: 12px; min-height: 20px; }
+    .setup-note {
+      background: rgba(191,90,242,0.08); border: 1px solid rgba(191,90,242,0.2);
+      border-radius: 10px; padding: 16px; margin-top: 24px; font-size: 0.82rem;
+      color: var(--secondary); line-height: 1.6;
+    }
+    .setup-note strong { color: var(--purple); }
+
+    /* ── App Shell ──────────────────────────────────── */
+    #app { display: none; }
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.95); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .topbar-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 1.1rem;
+      background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .btn-new {
+      background: var(--grad); color: #000; font-weight: 700; padding: 8px 20px;
+      border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-family: inherit;
+      transition: opacity 0.2s;
+    }
+    .btn-new:hover { opacity: 0.9; }
+    .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: inherit;
+      transition: all 0.2s; }
+    .btn-logout:hover { border-color: var(--pink); color: var(--pink); }
+
+    .main { max-width: 1300px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Stats Bar ──────────────────────────────────── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; }
+    .stat-val { font-size: 2rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .stat-card:nth-child(1) .stat-val { color: var(--purple); }
+    .stat-card:nth-child(2) .stat-val { color: var(--green); }
+    .stat-card:nth-child(3) .stat-val { color: var(--cyan); }
+    .stat-card:nth-child(4) .stat-val { color: var(--yellow); }
+
+    /* ── Section header ────────────────────────────── */
+    .section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-hdr h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; }
+
+    /* ── Ad Grid ────────────────────────────────────── */
+    .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .ad-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+    }
+    .ad-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+    .ad-card.disabled { opacity: 0.5; }
+    .ad-preview {
+      height: 140px; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+      background: linear-gradient(135deg, var(--bg2), var(--card2));
+    }
+    .ad-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .ad-preview .ad-preview-text {
+      padding: 16px; text-align: center;
+    }
+    .ad-type-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .type-banner { color: var(--cyan); border: 1px solid rgba(0,245,212,0.4); }
+    .type-card { color: var(--purple); border: 1px solid rgba(191,90,242,0.4); }
+    .type-sticky { color: var(--yellow); border: 1px solid rgba(254,228,64,0.4); }
+    .ad-status-dot {
+      position: absolute; top: 10px; right: 10px; width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .dot-on { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .dot-off { background: var(--muted); }
+    .ad-body { padding: 16px; }
+    .ad-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ad-link { font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 12px; }
+    .ad-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .ad-tag { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 2px 8px; font-size: 0.72rem; color: var(--secondary); }
+    .ad-stats { display: flex; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); margin-bottom: 12px; font-size: 0.82rem; color: var(--muted); }
+    .ad-stat strong { color: var(--text); }
+    .ad-actions { display: flex; gap: 8px; }
+    .btn-sm {
+      flex: 1; padding: 8px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; font-family: inherit; border: 1px solid var(--border);
+      background: var(--bg2); color: var(--secondary); transition: all 0.2s;
+    }
+    .btn-sm:hover { background: var(--card2); color: var(--text); border-color: var(--purple); }
+    .btn-sm.toggle-on { background: rgba(48,209,88,0.12); border-color: rgba(48,209,88,0.4); color: var(--green); }
+    .btn-sm.toggle-off { background: rgba(255,0,110,0.1); border-color: rgba(255,0,110,0.3); color: var(--pink); }
+    .btn-sm.danger:hover { background: rgba(255,0,110,0.1); border-color: var(--pink); color: var(--pink); }
+
+    /* ── Empty state ─────────────────────────────── */
+    .empty { text-align: center; padding: 80px 24px; color: var(--muted); }
+    .empty-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+    .empty p { font-size: 1rem; margin-bottom: 24px; }
+
+    /* ── Embed code ─────────────────────────────── */
+    .embed-section { margin-top: 48px; }
+    .embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .embed-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .embed-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+    .embed-card p { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .code-block {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px; font-size: 0.75rem; font-family: monospace; color: var(--cyan);
+      overflow-x: auto; white-space: pre; margin-bottom: 10px; line-height: 1.5;
+    }
+    .btn-copy {
+      width: 100%; padding: 8px; background: var(--bg2); border: 1px solid var(--border);
+      color: var(--secondary); border-radius: 8px; font-size: 0.8rem; cursor: pointer;
+      font-family: inherit; font-weight: 600; transition: all 0.2s;
+    }
+    .btn-copy:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ── Modal ──────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      z-index: 500; align-items: flex-start; justify-content: center;
+      padding: 24px; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+      width: 100%; max-width: 700px; margin: auto;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    .modal-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .modal-hdr h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
+    .modal-close {
+      background: var(--card); border: none; color: var(--secondary); width: 36px; height: 36px;
+      border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: var(--card2); color: var(--text); }
+    .modal-body { padding: 24px; }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-field { margin-bottom: 16px; }
+    .form-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--secondary);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; background: var(--card); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(191,90,242,0.1);
+    }
+    .form-field select option { background: var(--card); }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+    .color-row { display: flex; gap: 12px; align-items: center; }
+    .color-row input[type="color"] { width: 48px; height: 40px; padding: 4px; border-radius: 8px; cursor: pointer; }
+    .color-row input[type="text"] { flex: 1; }
+    .sites-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .site-check { display: flex; align-items: center; gap: 6px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; cursor: pointer;
+      transition: all 0.2s; font-size: 0.82rem; }
+    .site-check input { accent-color: var(--purple); }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+    .toggle-label { font-size: 0.9rem; font-weight: 600; }
+    .toggle { position: relative; width: 48px; height: 26px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--border); border-radius: 13px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 20px; height: 20px;
+      left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+    .live-preview {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; margin-top: 20px; min-height: 100px;
+    }
+    .live-preview-label { font-size: 0.75rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+    .live-preview-inner { padding: 16px; }
+    .modal-footer { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 24px; border-top: 1px solid var(--border); }
+    .btn-cancel { padding: 10px 24px; background: var(--card); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 600; }
+    .btn-save { padding: 10px 28px; background: var(--grad); border: none; color: #000;
+      border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 700; }
+
+    /* ── Toast ──────────────────────────────────── */
+    .toasts { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 20px; font-size: 0.9rem; animation: toastIn 0.3s ease; max-width: 360px; }
+    .toast.ok { border-color: rgba(0,245,212,0.5); }
+    .toast.err { border-color: rgba(255,0,110,0.5); }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    /* ── Responsive ─────────────────────────────── */
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .modal-row { grid-template-columns: 1fr; }
+      .topbar { padding: 0 16px; }
+      .main { padding: 20px 16px; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .login-box { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ─────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Ad Manager</div>
+    <div class="login-sub">SpunkArt Network — Admin Only</div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" onclick="doLogin()" id="login-btn">Sign In</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="setup-note">
+      <strong>First time?</strong> Go to <a href="https://console.firebase.google.com/project/predict-network-ec767/authentication" target="_blank">Firebase Console → Authentication</a>,
+      enable Email/Password, create your account, then sign in here.
+    </div>
+  </div>
+</div>
+
+<!-- ── App ───────────────────────────────────────── -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">📢 Ad Manager</div>
+    <div class="topbar-right">
+      <button class="btn-new" onclick="openModal()">+ New Ad</button>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Ads</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-active">—</div><div class="stat-label">Active</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-impr">—</div><div class="stat-label">Total Impressions</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-clicks">—</div><div class="stat-label">Total Clicks</div></div>
+    </div>
+
+    <!-- Ads -->
+    <div class="section-hdr">
+      <h2>All Ads</h2>
+      <span style="color:var(--muted);font-size:0.85rem;" id="filter-info"></span>
+    </div>
+    <div class="ads-grid" id="ads-grid">
+      <div class="empty"><span class="empty-icon">📭</span><p>Loading ads…</p></div>
+    </div>
+
+    <!-- Embed codes -->
+    <div class="embed-section">
+      <div class="section-hdr" style="margin-bottom:16px;">
+        <h2>Embed Codes</h2>
+        <span style="color:var(--muted);font-size:0.85rem;">Paste into any site</span>
+      </div>
+      <div class="embed-grid">
+        <div class="embed-card">
+          <h4>🟣 Banner Ad</h4>
+          <p>Full-width horizontal strip. Great above/below content sections.</p>
+          <div class="code-block" id="code-banner">&lt;div data-ad-slot="banner"&gt;&lt;/div&gt;
+&lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
+          <button class="btn-copy" onclick="copyCode('code-banner')">Copy Code</button>
+        </div>
+        <div class="embed-card">
+          <h4>🟤 Card Ad</h4>
+          <p>Square card — fits in sidebars, grids, or between content blocks.</p>
+          <div class="code-block" id="code-card">&lt;div data-ad-slot="card"&gt;&lt;/div&gt;
+&lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
+          <button class="btn-copy" onclick="copyCode('code-card')">Copy Code</button>
+        </div>
+        <div class="embed-card">
+          <h4>🟡 Sticky Bar</h4>
+          <p>Fixed bottom-of-screen bar. Stays visible as users scroll.</p>
+          <div class="code-block" id="code-sticky">&lt;div data-ad-slot="sticky"&gt;&lt;/div&gt;
+&lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
+          <button class="btn-copy" onclick="copyCode('code-sticky')">Copy Code</button>
+        </div>
+        <div class="embed-card">
+          <h4>🔵 All Slots</h4>
+          <p>Add all three slots at once. The script only loads once.</p>
+          <div class="code-block" id="code-all">&lt;div data-ad-slot="banner"&gt;&lt;/div&gt;
+&lt;div data-ad-slot="card"&gt;&lt;/div&gt;
+&lt;div data-ad-slot="sticky"&gt;&lt;/div&gt;
+&lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
+          <button class="btn-copy" onclick="copyCode('code-all')">Copy Code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Create/Edit Modal ─────────────────────────── -->
+<div class="modal-overlay" id="ad-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">New Ad</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <div class="form-field">
+          <label>Ad Name (internal)</label>
+          <input type="text" id="f-name" placeholder="e.g. Canva Banner Q1" maxlength="80">
+        </div>
+        <div class="form-field">
+          <label>Ad Type</label>
+          <select id="f-type" onchange="updatePreview()">
+            <option value="banner">Banner (full width)</option>
+            <option value="card">Card (square)</option>
+            <option value="sticky">Sticky Bar (fixed bottom)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Headline / Title</label>
+        <input type="text" id="f-headline" placeholder="Main text shown in the ad" maxlength="80" oninput="updatePreview()">
+      </div>
+      <div class="form-field">
+        <label>Description (optional)</label>
+        <textarea id="f-desc" placeholder="Supporting text below headline" maxlength="200" oninput="updatePreview()"></textarea>
+      </div>
+      <div class="modal-row">
+        <div class="form-field">
+          <label>Button Text</label>
+          <input type="text" id="f-btn" placeholder="e.g. Learn More, Try Free" maxlength="40" oninput="updatePreview()">
+        </div>
+        <div class="form-field">
+          <label>Link URL</label>
+          <input type="url" id="f-url" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Image URL (optional — leave blank for text-only)</label>
+        <input type="url" id="f-img" placeholder="https://example.com/image.jpg" oninput="updatePreview()">
+      </div>
+      <div class="modal-row">
+        <div class="form-field">
+          <label>Background Color</label>
+          <div class="color-row">
+            <input type="color" id="f-bg-color" value="#1a1a2e" oninput="syncColor('f-bg-color','f-bg-hex');updatePreview()">
+            <input type="text" id="f-bg-hex" value="#1a1a2e" maxlength="7" oninput="syncHex('f-bg-hex','f-bg-color');updatePreview()">
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Text Color</label>
+          <div class="color-row">
+            <input type="color" id="f-text-color" value="#f0f0f0" oninput="syncColor('f-text-color','f-text-hex');updatePreview()">
+            <input type="text" id="f-text-hex" value="#f0f0f0" maxlength="7" oninput="syncHex('f-text-hex','f-text-color');updatePreview()">
+          </div>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="form-field">
+          <label>Start Date (optional)</label>
+          <input type="datetime-local" id="f-start">
+        </div>
+        <div class="form-field">
+          <label>End Date (optional)</label>
+          <input type="datetime-local" id="f-end">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Show on Sites</label>
+        <div class="sites-checkboxes" id="sites-checks">
+          <label class="site-check"><input type="checkbox" value="all" id="site-all" onchange="handleAllSites(this)"> All Sites</label>
+          <label class="site-check"><input type="checkbox" value="pfp.best"> pfp.best</label>
+          <label class="site-check"><input type="checkbox" value="spunk.bet"> spunk.bet</label>
+          <label class="site-check"><input type="checkbox" value="predict.horse"> predict.horse</label>
+          <label class="site-check"><input type="checkbox" value="predict.pics"> predict.pics</label>
+          <label class="site-check"><input type="checkbox" value="predict.mom"> predict.mom</label>
+          <label class="site-check"><input type="checkbox" value="predict.gay"> predict.gay</label>
+          <label class="site-check"><input type="checkbox" value="predict.autos"> predict.autos</label>
+          <label class="site-check"><input type="checkbox" value="predict.beauty"> predict.beauty</label>
+          <label class="site-check"><input type="checkbox" value="spunkart.com"> spunkart.com</label>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Ad Enabled</span>
+        <label class="toggle"><input type="checkbox" id="f-enabled" checked><span class="toggle-slider"></span></label>
+      </div>
+
+      <!-- Live Preview -->
+      <div class="live-preview">
+        <div class="live-preview-label">Live Preview</div>
+        <div class="live-preview-inner" id="ad-preview-inner">Fill in the fields above to see a preview.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAd()">Save Ad</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toasts ────────────────────────────────────── -->
+<div class="toasts" id="toasts"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+// ── Firebase init ────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBXAqOFYo8_lWPYTzSLqvtPYClDqrlih9Q",
+  authDomain: "predict-network-ec767.firebaseapp.com",
+  databaseURL: "https://predict-network-ec767-default-rtdb.firebaseio.com",
+  projectId: "predict-network-ec767",
+  storageBucket: "predict-network-ec767.firebasestorage.app",
+  messagingSenderId: "487118700387",
+  appId: "1:487118700387:web:2bae41728d3a6e3b515d56"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
+
+const adsRef = db.ref('ads_manager/ads');
+const statsRef = db.ref('ads_manager/global_stats');
+
+let currentEditId = null;
+let allAds = {};
+
+// ── Auth ─────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAds();
+    subscribeStats();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  const btn   = document.getElementById('login-btn');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Enter email and password.'; return; }
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch (e) {
+    errEl.textContent = e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found'
+      ? 'Incorrect email or password.'
+      : e.message;
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+  }
+}
+
+function doLogout() {
+  auth.signOut();
+}
+
+// ── Load ads ──────────────────────────────────────────────────────────
+function loadAds() {
+  adsRef.on('value', snap => {
+    allAds = snap.val() || {};
+    renderAds();
+    renderStats();
+  });
+}
+
+function subscribeStats() {
+  statsRef.on('value', snap => {
+    const s = snap.val() || {};
+    const imprEl = document.getElementById('stat-impr');
+    const clkEl  = document.getElementById('stat-clicks');
+    if (imprEl) imprEl.textContent = fmtNum(s.impressions || 0);
+    if (clkEl)  clkEl.textContent  = fmtNum(s.clicks || 0);
+  });
+}
+
+function renderStats() {
+  const all    = Object.values(allAds);
+  const active = all.filter(a => a.enabled).length;
+  document.getElementById('stat-total').textContent  = all.length;
+  document.getElementById('stat-active').textContent = active;
+}
+
+function renderAds() {
+  const grid = document.getElementById('ads-grid');
+  const ads  = Object.entries(allAds);
+  if (!ads.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <span class="empty-icon">📭</span>
+      <p>No ads yet.</p>
+      <button class="btn-new" onclick="openModal()">Create your first ad</button>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = ads.map(([id, ad]) => adCard(id, ad)).join('');
+}
+
+function adCard(id, ad) {
+  const typeClass = `type-${ad.type || 'banner'}`;
+  const typeLabel = { banner: 'Banner', card: 'Card', sticky: 'Sticky' }[ad.type] || 'Banner';
+  const isOn      = ad.enabled;
+  const impr      = fmtNum(ad.impressions || 0);
+  const clicks    = fmtNum(ad.clicks || 0);
+  const sites     = ad.sites ? (Array.isArray(ad.sites) ? ad.sites : Object.values(ad.sites)) : ['all'];
+  const siteTags  = sites.slice(0, 3).map(s => `<span class="ad-tag">${escHtml(s)}</span>`).join('') + (sites.length > 3 ? `<span class="ad-tag">+${sites.length - 3}</span>` : '');
+
+  const previewBg = ad.bgColor || '#1a1a2e';
+  const previewFg = ad.textColor || '#f0f0f0';
+  const previewHtml = ad.imageUrl
+    ? `<img src="${escHtml(ad.imageUrl)}" alt="${escHtml(ad.headline || 'Ad')}" style="width:100%;height:140px;object-fit:cover;" onerror="this.style.display='none'">`
+    : `<div class="ad-preview-text" style="background:${previewBg};width:100%;height:100%;padding:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;">
+        <div style="font-weight:700;color:${previewFg};font-size:0.95rem;">${escHtml(ad.headline || '')}</div>
+        ${ad.desc ? `<div style="font-size:0.8rem;color:${previewFg};opacity:0.7;">${escHtml(ad.desc)}</div>` : ''}
+       </div>`;
+
+  return `
+  <div class="ad-card${isOn ? '' : ' disabled'}" id="adcard-${id}">
+    <div class="ad-preview">
+      ${previewHtml}
+      <span class="ad-type-badge ${typeClass}">${typeLabel}</span>
+      <span class="ad-status-dot ${isOn ? 'dot-on' : 'dot-off'}"></span>
+    </div>
+    <div class="ad-body">
+      <div class="ad-name">${escHtml(ad.name || 'Unnamed Ad')}</div>
+      <div class="ad-link">${escHtml(ad.url || '—')}</div>
+      <div class="ad-meta">${siteTags}</div>
+      <div class="ad-stats">
+        <span><strong>${impr}</strong> impr.</span>
+        <span><strong>${clicks}</strong> clicks</span>
+        ${ad.clicks && ad.impressions ? `<span><strong>${((ad.clicks / ad.impressions) * 100).toFixed(1)}%</strong> CTR</span>` : ''}
+      </div>
+      <div class="ad-actions">
+        <button class="btn-sm ${isOn ? 'toggle-on' : 'toggle-off'}" onclick="toggleAd('${id}',${isOn})">
+          ${isOn ? '✓ Live' : '✗ Paused'}
+        </button>
+        <button class="btn-sm" onclick="editAd('${id}')">Edit</button>
+        <button class="btn-sm danger" onclick="deleteAd('${id}')">Delete</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── CRUD ──────────────────────────────────────────────────────────────
+async function toggleAd(id, currentState) {
+  await adsRef.child(id).update({ enabled: !currentState });
+  toast(!currentState ? 'Ad enabled — now live!' : 'Ad paused.', !currentState ? 'ok' : '');
+}
+
+async function deleteAd(id) {
+  if (!confirm('Delete this ad permanently?')) return;
+  await adsRef.child(id).remove();
+  toast('Ad deleted.', '');
+}
+
+function editAd(id) {
+  const ad = allAds[id];
+  if (!ad) return;
+  currentEditId = id;
+  document.getElementById('modal-title').textContent = 'Edit Ad';
+
+  // Fill form
+  document.getElementById('f-name').value     = ad.name || '';
+  document.getElementById('f-type').value     = ad.type || 'banner';
+  document.getElementById('f-headline').value = ad.headline || '';
+  document.getElementById('f-desc').value     = ad.desc || '';
+  document.getElementById('f-btn').value      = ad.btnText || '';
+  document.getElementById('f-url').value      = ad.url || '';
+  document.getElementById('f-img').value      = ad.imageUrl || '';
+  document.getElementById('f-bg-hex').value   = ad.bgColor || '#1a1a2e';
+  document.getElementById('f-bg-color').value = ad.bgColor || '#1a1a2e';
+  document.getElementById('f-text-hex').value = ad.textColor || '#f0f0f0';
+  document.getElementById('f-text-color').value = ad.textColor || '#f0f0f0';
+  document.getElementById('f-enabled').checked = !!ad.enabled;
+
+  if (ad.startDate) document.getElementById('f-start').value = new Date(ad.startDate).toISOString().slice(0,16);
+  if (ad.endDate)   document.getElementById('f-end').value   = new Date(ad.endDate).toISOString().slice(0,16);
+
+  // Sites
+  const sites = ad.sites ? (Array.isArray(ad.sites) ? ad.sites : Object.values(ad.sites)) : ['all'];
+  document.querySelectorAll('#sites-checks input[type=checkbox]').forEach(cb => {
+    cb.checked = sites.includes('all') ? cb.value === 'all' : sites.includes(cb.value);
+  });
+
+  openModal();
+  updatePreview();
+}
+
+async function saveAd() {
+  const name     = document.getElementById('f-name').value.trim();
+  const type     = document.getElementById('f-type').value;
+  const headline = document.getElementById('f-headline').value.trim();
+  const desc     = document.getElementById('f-desc').value.trim();
+  const btnText  = document.getElementById('f-btn').value.trim();
+  const url      = document.getElementById('f-url').value.trim();
+  const imageUrl = document.getElementById('f-img').value.trim();
+  const bgColor  = document.getElementById('f-bg-hex').value.trim() || '#1a1a2e';
+  const textColor = document.getElementById('f-text-hex').value.trim() || '#f0f0f0';
+  const enabled  = document.getElementById('f-enabled').checked;
+  const startVal = document.getElementById('f-start').value;
+  const endVal   = document.getElementById('f-end').value;
+
+  if (!name) { toast('Ad name is required.', 'err'); return; }
+  if (!headline) { toast('Headline is required.', 'err'); return; }
+  if (!url) { toast('Link URL is required.', 'err'); return; }
+
+  // Collect sites
+  const siteChecks = [...document.querySelectorAll('#sites-checks input[type=checkbox]:checked')];
+  const sites = siteChecks.map(cb => cb.value).filter(Boolean);
+  if (!sites.length) { toast('Select at least one site.', 'err'); return; }
+
+  const ad = {
+    name, type, headline, desc, btnText, url, imageUrl,
+    bgColor, textColor, enabled, sites,
+    startDate: startVal ? new Date(startVal).getTime() : null,
+    endDate:   endVal   ? new Date(endVal).getTime()   : null,
+    updatedAt: firebase.database.ServerValue.TIMESTAMP,
+    impressions: 0,
+    clicks: 0
+  };
+
+  if (currentEditId) {
+    // Preserve existing stats
+    const existing = allAds[currentEditId];
+    if (existing) { ad.impressions = existing.impressions || 0; ad.clicks = existing.clicks || 0; }
+    ad.createdAt = existing?.createdAt || firebase.database.ServerValue.TIMESTAMP;
+    await adsRef.child(currentEditId).update(ad);
+    toast('Ad updated!', 'ok');
+  } else {
+    ad.createdAt = firebase.database.ServerValue.TIMESTAMP;
+    await adsRef.push(ad);
+    toast('Ad created and live!', 'ok');
+  }
+  closeModal();
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────
+function openModal() {
+  if (!currentEditId) {
+    // Reset form
+    ['f-name','f-headline','f-desc','f-btn','f-url','f-img'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-type').value = 'banner';
+    document.getElementById('f-bg-hex').value  = '#1a1a2e';
+    document.getElementById('f-bg-color').value = '#1a1a2e';
+    document.getElementById('f-text-hex').value = '#f0f0f0';
+    document.getElementById('f-text-color').value = '#f0f0f0';
+    document.getElementById('f-enabled').checked = true;
+    document.getElementById('f-start').value = '';
+    document.getElementById('f-end').value = '';
+    document.querySelectorAll('#sites-checks input').forEach(cb => { cb.checked = cb.value === 'all'; });
+    document.getElementById('modal-title').textContent = 'New Ad';
+    updatePreview();
+  }
+  document.getElementById('ad-modal').classList.add('open');
+  document.getElementById('f-name').focus();
+}
+
+function closeModal() {
+  document.getElementById('ad-modal').classList.remove('open');
+  currentEditId = null;
+}
+
+// ── Preview ───────────────────────────────────────────────────────────
+function updatePreview() {
+  const headline = document.getElementById('f-headline').value || 'Your Headline';
+  const desc     = document.getElementById('f-desc').value;
+  const btnText  = document.getElementById('f-btn').value || 'Learn More';
+  const imageUrl = document.getElementById('f-img').value;
+  const bgColor  = document.getElementById('f-bg-hex').value || '#1a1a2e';
+  const textColor = document.getElementById('f-text-hex').value || '#f0f0f0';
+  const type     = document.getElementById('f-type').value;
+
+  let html = '';
+  if (type === 'banner') {
+    html = `<div style="background:${bgColor};padding:16px 24px;display:flex;align-items:center;gap:16px;border-radius:10px;flex-wrap:wrap;">
+      ${imageUrl ? `<img src="${escHtml(imageUrl)}" style="height:60px;width:auto;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+      <div style="flex:1;min-width:160px;">
+        <div style="color:${textColor};font-weight:700;font-size:1rem;">${escHtml(headline)}</div>
+        ${desc ? `<div style="color:${textColor};opacity:0.7;font-size:0.85rem;margin-top:4px;">${escHtml(desc)}</div>` : ''}
+      </div>
+      <span style="background:${textColor};color:${bgColor};font-weight:700;padding:8px 20px;border-radius:8px;font-size:0.85rem;white-space:nowrap;">${escHtml(btnText)}</span>
+    </div>`;
+  } else if (type === 'card') {
+    html = `<div style="background:${bgColor};border-radius:10px;overflow:hidden;max-width:280px;">
+      ${imageUrl ? `<img src="${escHtml(imageUrl)}" style="width:100%;height:140px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+      <div style="padding:14px;">
+        <div style="color:${textColor};font-weight:700;font-size:0.95rem;margin-bottom:6px;">${escHtml(headline)}</div>
+        ${desc ? `<div style="color:${textColor};opacity:0.7;font-size:0.82rem;margin-bottom:10px;">${escHtml(desc)}</div>` : ''}
+        <span style="display:inline-block;background:${textColor};color:${bgColor};font-weight:700;padding:7px 16px;border-radius:6px;font-size:0.82rem;">${escHtml(btnText)}</span>
+      </div>
+    </div>`;
+  } else {
+    html = `<div style="background:${bgColor};padding:10px 24px;display:flex;align-items:center;justify-content:space-between;border-radius:10px;flex-wrap:wrap;gap:10px;">
+      ${imageUrl ? `<img src="${escHtml(imageUrl)}" style="height:40px;width:auto;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+      <span style="color:${textColor};font-weight:600;font-size:0.9rem;flex:1;padding:0 10px;">${escHtml(headline)}${desc ? ` — ${escHtml(desc)}` : ''}</span>
+      <span style="background:${textColor};color:${bgColor};font-weight:700;padding:7px 18px;border-radius:6px;font-size:0.85rem;white-space:nowrap;">${escHtml(btnText)}</span>
+    </div>`;
+  }
+  document.getElementById('ad-preview-inner').innerHTML = html;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function handleAllSites(cb) {
+  document.querySelectorAll('#sites-checks input[type=checkbox]').forEach(c => {
+    if (c !== cb) c.checked = false;
+  });
+  cb.checked = true;
+}
+
+function syncColor(colorId, hexId) {
+  document.getElementById(hexId).value = document.getElementById(colorId).value;
+}
+function syncHex(hexId, colorId) {
+  const v = document.getElementById(hexId).value;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById(colorId).value = v;
+}
+
+function copyCode(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => toast('Code copied!', 'ok'));
+}
+
+function escHtml(str) {
+  const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
+}
+function fmtNum(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return String(n);
+}
+
+function toast(msg, type) {
+  const container = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(10px)'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300); }, 3000);
+}
+</script>
+</body>
+</html>
