@@ -141,11 +141,14 @@ async function ratePfp(pfpId, rating) {
   const fp = getFingerprint();
   const ratingKey = `${pfpId}_${fp}`;
 
-  // Check if already rated
-  const existing = await ratingsRef.child(ratingKey).once('value');
-  const oldRating = existing.val();
+  // Try to read existing rating for de-dup (rules may block this — that's ok)
+  let oldRating = null;
+  try {
+    const existing = await ratingsRef.child(ratingKey).once('value');
+    oldRating = existing.val();
+  } catch (_) { /* PERMISSION_DENIED — treat as new rating */ }
 
-  // Save rating
+  // Save rating (write rules allow this)
   await ratingsRef.child(ratingKey).set({
     pfpId,
     rating,
@@ -156,7 +159,7 @@ async function ratePfp(pfpId, rating) {
   // Update PFP aggregate
   await pfpsRef.child(pfpId).transaction(pfp => {
     if (pfp) {
-      if (oldRating) {
+      if (oldRating && oldRating.rating) {
         pfp.ratingSum = (pfp.ratingSum || 0) - oldRating.rating + rating;
       } else {
         pfp.ratingSum = (pfp.ratingSum || 0) + rating;
@@ -173,8 +176,13 @@ async function ratePfp(pfpId, rating) {
 async function votePfp(pfpId, type) {
   const fp = getFingerprint();
   const voteKey = `votes/${pfpId}_${fp}`;
-  const existing = await db.ref('pfpbest/' + voteKey).once('value');
-  const oldVote = existing.val();
+
+  // Try to read existing vote for de-dup (rules may block — that's ok)
+  let oldVote = null;
+  try {
+    const existing = await db.ref('pfpbest/' + voteKey).once('value');
+    oldVote = existing.val();
+  } catch (_) { /* PERMISSION_DENIED — treat as new vote */ }
 
   if (oldVote === type) return;
 

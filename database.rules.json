@@ -3,6 +3,7 @@
     "pfpbest": {
       "pfps": {
         ".read": true,
+        ".indexOn": ["score", "ratingAvg", "uploadedAt", "commentCount", "downvotes"],
         "$pfpId": {
           ".write": "!data.exists()",
           ".validate": "newData.hasChildren(['id','imageUrl','title','category','uploadedAt','uploadedBy']) && newData.child('title').val().length <= 80 && newData.child('category').val().length <= 30",
@@ -32,8 +33,8 @@
       "ratings": {
         ".read": false,
         "$ratingKey": {
-          ".write": "newData.hasChildren(['pfpId','rating','fp','timestamp']) && newData.child('rating').isNumber() && newData.child('rating').val() >= 1 && newData.child('rating').val() <= 10",
-          ".read": false
+          ".read": true,
+          ".write": "newData.hasChildren(['pfpId','rating','fp','timestamp']) && newData.child('rating').isNumber() && newData.child('rating').val() >= 1 && newData.child('rating').val() <= 10"
         }
       },
       "comments": {
@@ -48,8 +49,8 @@
       "votes": {
         ".read": false,
         "$voteKey": {
-          ".write": "newData.val() === 'up' || newData.val() === 'down'",
-          ".read": false
+          ".read": true,
+          ".write": "newData.val() === 'up' || newData.val() === 'down'"
         }
       },
       "banned": {
