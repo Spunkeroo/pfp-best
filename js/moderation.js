@@ -57,12 +57,15 @@ const Moderation = {
     try {
       model = await this.loadModel();
     } catch (err) {
-      // Fail closed — if we can't load the safety model, block the upload
-      return { safe: false, reason: 'moderation_unavailable', scores: {} };
+      // Model unavailable (common on mobile) — allow upload
+      console.warn('[Moderation] Model load error, allowing upload:', err);
+      return { safe: true, reason: null, scores: {} };
     }
 
     if (!model) {
-      return { safe: false, reason: 'moderation_unavailable', scores: {} };
+      // Model unavailable (mobile, memory limits, etc.) — allow upload
+      console.warn('[Moderation] Model unavailable, allowing upload without scan');
+      return { safe: true, reason: null, scores: {} };
     }
 
     try {

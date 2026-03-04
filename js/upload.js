@@ -101,7 +101,9 @@
   });
 
   // ── Click to browse ──────────────────────────────────────────────────────
-  uploadZone.addEventListener('click', () => {
+  uploadZone.addEventListener('click', (e) => {
+    // Don't open file picker if preview is visible (user tapped preview area)
+    if (uploadPreview.style.display === 'flex') return;
     uploadInput.click();
   });
 
@@ -174,29 +176,26 @@
       submitBtn.disabled = true;
 
       try {
-        // 1. Check if user is already banned
-        submitBtn.textContent = 'Checking account…';
-        const banned = await isBanned();
-        if (banned) {
-          disableUploadForBan();
-          showToast('Your account has been suspended.', 'error');
-          return;
-        }
+        // 1. Check if user is already banned (skip if Firebase unavailable)
+        submitBtn.textContent = 'Checking…';
+        try {
+          const banned = await isBanned();
+          if (banned) {
+            disableUploadForBan();
+            showToast('Your account has been suspended.', 'error');
+            return;
+          }
+        } catch (_) { /* Firebase offline — continue */ }
 
-        // 2. Run content moderation on the preview image
-        submitBtn.textContent = 'Scanning image…';
+        // 2. Run content moderation (only blocks on confirmed explicit content)
+        submitBtn.textContent = 'Uploading…';
         const safety = await Moderation.checkImage(previewImg);
 
-        if (!safety.safe) {
-          // Ban this fingerprint and refuse the upload
-          await banFingerprint(safety.reason || 'explicit_content');
+        if (!safety.safe && safety.reason !== 'moderation_unavailable') {
+          // Only ban on confirmed explicit content, not on scan failures
+          try { await banFingerprint(safety.reason || 'explicit_content'); } catch (_) {}
           disableUploadForBan();
-          showToast(
-            safety.reason === 'moderation_unavailable'
-              ? 'Content scan unavailable. Please try again later.'
-              : 'Image rejected: explicit content is not allowed.',
-            'error'
-          );
+          showToast('Image rejected: explicit content is not allowed.', 'error');
           resetUpload();
           return;
         }
