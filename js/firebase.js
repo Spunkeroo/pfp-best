@@ -109,12 +109,13 @@ function compressImage(file, maxSize, quality) {
 
 // Create PFP entry in database
 async function createPfp(data) {
-  const { id, url, title, category, tags } = data;
+  const { id, url, title, category, chain, tags } = data;
   const entry = {
     id,
     imageUrl: url,
     title: title || 'Untitled PFP',
     category: category || 'other',
+    chain: chain || 'art',
     tags: tags || [],
     uploadedAt: firebase.database.ServerValue.TIMESTAMP,
     uploadedBy: getFingerprint(),

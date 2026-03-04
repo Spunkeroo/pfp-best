@@ -92,7 +92,17 @@
         <input type="text" id="pfp-title" placeholder="Name your PFP..." maxlength="60">
       </div>
       <div class="form-group">
-        <label>Category</label>
+        <label>Blockchain / Origin <span style="color:var(--neon-pink);font-size:0.75rem;">* required</span></label>
+        <div class="tag-pills" id="chain-pills">
+          <span class="tag-pill" data-chain="BTC">₿ Bitcoin</span>
+          <span class="tag-pill" data-chain="ETH">⟠ Ethereum</span>
+          <span class="tag-pill" data-chain="SOL">◎ Solana</span>
+          <span class="tag-pill" data-chain="art">🖼️ Art Only</span>
+        </div>
+        <div id="chain-error" style="color:var(--neon-pink);font-size:0.78rem;margin-top:4px;display:none;">Please select a blockchain or Art Only</div>
+      </div>
+      <div class="form-group">
+        <label>Style</label>
         <div class="tag-pills">
           <span class="tag-pill selected" data-category="pfp">🎨 PFP</span>
           <span class="tag-pill" data-category="funny">😂 Funny</span>
@@ -101,6 +111,40 @@
         </div>
       </div>
       <button class="submit-btn" id="submit-pfp">Submit for Rating ⚡</button>
+    </div>
+  </section>
+
+  <!-- How It Works Infographic -->
+  <section class="how-it-works">
+    <h2 class="hiw-title">How It Works</h2>
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-icon">📸</div>
+        <div class="hiw-num">1</div>
+        <h3>Upload</h3>
+        <p>Drop your PFP, pick your blockchain (BTC / ETH / SOL) or Art Only, then hit submit.</p>
+      </div>
+      <div class="hiw-arrow">→</div>
+      <div class="hiw-step">
+        <div class="hiw-icon">⭐</div>
+        <div class="hiw-num">2</div>
+        <h3>Rate Yours First</h3>
+        <p>Your modal opens instantly — give yourself a score 1–10 to kick off your ranking.</p>
+      </div>
+      <div class="hiw-arrow">→</div>
+      <div class="hiw-step">
+        <div class="hiw-icon">🔥</div>
+        <div class="hiw-num">3</div>
+        <h3>Get Roasted</h3>
+        <p>The community rates, votes, and drops comments. The best PFPs rise to the top.</p>
+      </div>
+      <div class="hiw-arrow">→</div>
+      <div class="hiw-step">
+        <div class="hiw-icon">𝕏</div>
+        <div class="hiw-num">4</div>
+        <h3>Share &amp; Climb</h3>
+        <p>Share your rating on X to bring in more votes. Refer friends for a +5 boost.</p>
+      </div>
     </div>
   </section>
 
@@ -135,6 +179,13 @@
     <div class="section-header">
       <h2><span class="emoji">🏆</span> Top Rated</h2>
       <a href="pages/leaderboard.html" class="section-link">Full Board →</a>
+    </div>
+    <div class="leaderboard-tabs" style="margin-bottom:16px;">
+      <button class="leaderboard-tab active" onclick="filterChain('all', this)">🌐 All</button>
+      <button class="leaderboard-tab" onclick="filterChain('BTC', this)">₿ BTC</button>
+      <button class="leaderboard-tab" onclick="filterChain('ETH', this)">⟠ ETH</button>
+      <button class="leaderboard-tab" onclick="filterChain('SOL', this)">◎ SOL</button>
+      <button class="leaderboard-tab" onclick="filterChain('art', this)">🖼️ Art</button>
     </div>
     <div class="pfp-grid" id="trending-grid">
       <div class="loading-spinner"><div class="spinner"></div> Loading...</div>

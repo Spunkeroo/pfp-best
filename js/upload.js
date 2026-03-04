@@ -11,7 +11,8 @@
   const submitBtn     = document.getElementById('submit-pfp');
 
   let selectedFile     = null;
-  let selectedCategory = 'other';
+  let selectedCategory = 'pfp';
+  let selectedChain    = null; // required — BTC, ETH, SOL, or art
 
   if (!uploadZone) return;
 
@@ -49,11 +50,15 @@
   // ── Reset to blank upload state ──────────────────────────────────────────
   function resetUpload() {
     selectedFile = null;
+    selectedChain = null;
     uploadContent.style.display = 'block';
     uploadPreview.style.display = 'none';
     uploadForm.classList.remove('active');
     uploadInput.value = '';
     previewImg.src = '';
+    document.querySelectorAll('#chain-pills .tag-pill').forEach(p => p.classList.remove('selected'));
+    const err = document.getElementById('chain-error');
+    if (err) err.style.display = 'none';
   }
 
   // ── Disable the upload zone for banned users ─────────────────────────────
@@ -116,10 +121,22 @@
     }
   });
 
-  // ── Category selection ───────────────────────────────────────────────────
-  document.querySelectorAll('.tag-pill').forEach(pill => {
+  // ── Chain selection (required) ───────────────────────────────────────────
+  const chainPills = document.querySelectorAll('#chain-pills .tag-pill');
+  chainPills.forEach(pill => {
     pill.addEventListener('click', () => {
-      document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('selected'));
+      chainPills.forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+      selectedChain = pill.dataset.chain;
+      const err = document.getElementById('chain-error');
+      if (err) err.style.display = 'none';
+    });
+  });
+
+  // ── Style/category selection ─────────────────────────────────────────────
+  document.querySelectorAll('.tag-pill:not(#chain-pills .tag-pill)').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.tag-pill:not(#chain-pills .tag-pill)').forEach(p => p.classList.remove('selected'));
       pill.classList.add('selected');
       selectedCategory = pill.dataset.category;
     });
@@ -139,6 +156,14 @@
     submitBtn.addEventListener('click', async () => {
       if (!selectedFile) {
         showToast('Please select an image first', 'error');
+        return;
+      }
+
+      // Chain is required
+      if (!selectedChain) {
+        const err = document.getElementById('chain-error');
+        if (err) err.style.display = 'block';
+        showToast('Select a blockchain or Art Only to continue', 'error');
         return;
       }
 
@@ -187,16 +212,18 @@
           url,
           title: title || 'Untitled PFP',
           category: selectedCategory,
-          tags: [selectedCategory]
+          chain: selectedChain,
+          tags: [selectedCategory, selectedChain]
         });
 
-        showToast('PFP uploaded! Let the ratings begin! 🔥', 'success');
+        showToast('PFP uploaded! Now rate it yourself to start your score! ⭐', 'success');
         resetUpload();
         if (titleInput) titleInput.value = '';
 
+        // Open the modal so the user can immediately rate their own PFP
         setTimeout(() => {
-          window.location.hash = `#pfp/${id}`;
-        }, 500);
+          openPfpModal(id);
+        }, 600);
 
       } catch (err) {
         console.error('Upload error:', err);
