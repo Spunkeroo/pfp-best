@@ -77,6 +77,17 @@ function filterChain(chain, btn) {
   loadTrendingByChain(chain);
 }
 
+// Category filter for browse chips
+function filterCategory(category, btn) {
+  document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active-chip'));
+  if (btn) btn.classList.add('active-chip');
+  if (!category || category === 'all') {
+    loadTrendingByChain(currentChainFilter);
+  } else {
+    loadCategoryPfps(category);
+  }
+}
+
 // Load trending PFPs filtered by blockchain
 async function loadTrendingByChain(chain) {
   const grid = document.getElementById('trending-grid');

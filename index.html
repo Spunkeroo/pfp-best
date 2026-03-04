@@ -217,9 +217,9 @@
       <div class="referral-actions">
         <div class="referral-link-box">
           <span id="referral-url">pfp.best/?ref=...</span>
-          <button onclick="copyReferral()" id="copy-ref-btn">Copy</button>
+          <button id="referral-copy">📋 Copy</button>
         </div>
-        <button class="referral-share-btn" onclick="shareReferral()">𝕏 Share on X</button>
+        <button class="referral-share-btn" id="referral-share">𝕏 Share on X</button>
       </div>
       <div class="referral-stats">
         <span>👥 <strong id="ref-count">0</strong> friends referred</span>
@@ -322,9 +322,9 @@
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>
   <script src="js/share.js"></script>
-  <script src="js/ai-rater.js"></script>
   <script src="js/moderation.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/ai-rater.js"></script>
   <script src="js/upload.js"></script>
   <script src="js/referral.js"></script>
 
