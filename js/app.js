@@ -51,9 +51,8 @@ function renderPfpCard(pfp, rank) {
           </div>
         </div>
         <div class="pfp-card-share">
-          <button onclick="event.stopPropagation(); shareToX('${pfp.id}', '${safeTitle}', ${rating})" title="Share on X">𝕏</button>
-          <button onclick="event.stopPropagation(); shareToDiscord('${pfp.id}', '${safeTitle}', ${rating})" title="Share on Discord">💬</button>
-          <button onclick="event.stopPropagation(); copyPfpLink('${pfp.id}')" title="Copy Link">🔗</button>
+          <button onclick="event.stopPropagation(); shareToX('${pfp.id}', '${safeTitle}', ${rating})" title="Share on X">𝕏 Share</button>
+          <button onclick="event.stopPropagation(); copyPfpLink('${pfp.id}')" title="Copy Link">🔗 Copy</button>
         </div>
       </div>
     </div>
@@ -104,11 +103,6 @@ async function loadTrendingByChain(chain) {
 function shareToX(pfpId, title, rating) {
   const text = encodeURIComponent(`${title} rated ${rating}/10 on pfp.best 🔥\n\nRate yours → https://pfp.best/#pfp/${pfpId}`);
   window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'width=550,height=420');
-}
-
-function shareToDiscord(pfpId, title, rating) {
-  const text = `**${title}** rated **${rating}/10** ⭐\nRate yours: https://pfp.best/#pfp/${pfpId}`;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied for Discord!', 'success'));
 }
 
 function copyPfpLink(pfpId) {
@@ -177,9 +171,6 @@ async function openPfpModal(pfpId) {
     <div class="share-buttons">
       <button class="share-btn share-btn-x" onclick="ShareCard.shareToX(currentModalPfp)">
         𝕏 Share on X
-      </button>
-      <button class="share-btn share-btn-discord" onclick="ShareCard.copyDiscordEmbed(currentModalPfp)">
-        💬 Discord
       </button>
       <button class="share-btn share-btn-copy" onclick="ShareCard.copyLink('${pfpId}')">
         📋 Copy Link

@@ -35,13 +35,21 @@
       min-height: 100vh; padding: 24px;
     }
     .login-box {
-      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      background: var(--card); border-radius: 20px;
       padding: 48px 40px; width: 100%; max-width: 420px;
-      box-shadow: 0 0 60px rgba(191,90,242,0.1);
+      box-shadow: 0 0 80px rgba(191,90,242,0.25), 0 0 160px rgba(0,245,212,0.08);
+      position: relative;
     }
-    .login-logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 800;
+    .login-box::before {
+      content: ''; position: absolute; inset: -2px; border-radius: 22px;
+      background: linear-gradient(135deg, #bf5af2, #00f5d4, #bf5af2);
+      z-index: -1; animation: borderGlow 3s ease-in-out infinite;
+    }
+    @keyframes borderGlow { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+    .login-logo { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 800;
       background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; text-align: center; margin-bottom: 8px; }
+      background-clip: text; text-align: center; margin-bottom: 4px;
+      text-shadow: none; filter: drop-shadow(0 0 20px rgba(191,90,242,0.5)); }
     .login-sub { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
     .field { margin-bottom: 16px; }
     .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--secondary);
@@ -78,11 +86,12 @@
       background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .topbar-right { display: flex; align-items: center; gap: 12px; }
     .btn-new {
-      background: var(--grad); color: #000; font-weight: 700; padding: 8px 20px;
+      background: var(--grad); color: #000; font-weight: 800; padding: 8px 20px;
       border-radius: 8px; border: none; cursor: pointer; font-size: 0.9rem; font-family: inherit;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
+      box-shadow: 0 0 20px rgba(191,90,242,0.5), 0 0 40px rgba(0,245,212,0.2);
     }
-    .btn-new:hover { opacity: 0.9; }
+    .btn-new:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 0 28px rgba(191,90,242,0.7), 0 0 56px rgba(0,245,212,0.3); }
     .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted);
       padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: inherit;
       transition: all 0.2s; }
@@ -92,26 +101,33 @@
 
     /* ── Stats Bar ──────────────────────────────────── */
     .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; transition: transform 0.2s, box-shadow 0.2s; }
+    .stat-card:hover { transform: translateY(-2px); }
     .stat-val { font-size: 2rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
     .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-    .stat-card:nth-child(1) .stat-val { color: var(--purple); }
-    .stat-card:nth-child(2) .stat-val { color: var(--green); }
-    .stat-card:nth-child(3) .stat-val { color: var(--cyan); }
-    .stat-card:nth-child(4) .stat-val { color: var(--yellow); }
+    .stat-card:nth-child(1) { border-bottom: 3px solid var(--purple); }
+    .stat-card:nth-child(2) { border-bottom: 3px solid var(--green); }
+    .stat-card:nth-child(3) { border-bottom: 3px solid var(--cyan); }
+    .stat-card:nth-child(4) { border-bottom: 3px solid var(--yellow); }
+    .stat-card:nth-child(1) .stat-val { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.7); }
+    .stat-card:nth-child(2) .stat-val { color: var(--green); text-shadow: 0 0 20px rgba(48,209,88,0.7); }
+    .stat-card:nth-child(3) .stat-val { color: var(--cyan); text-shadow: 0 0 20px rgba(0,245,212,0.7); }
+    .stat-card:nth-child(4) .stat-val { color: var(--yellow); text-shadow: 0 0 20px rgba(254,228,64,0.7); }
 
     /* ── Section header ────────────────────────────── */
     .section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .section-hdr h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; }
+    .section-hdr h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; position: relative; padding-bottom: 8px; }
+    .section-hdr h2::after { content: ''; display: block; position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; border-radius: 2px; background: var(--grad); }
 
     /* ── Ad Grid ────────────────────────────────────── */
     .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
     .ad-card {
       background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-      overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+      overflow: hidden; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
-    .ad-card:hover { border-color: var(--purple); transform: translateY(-2px); }
-    .ad-card.disabled { opacity: 0.5; }
+    .ad-card:hover { border-color: var(--purple); transform: translateY(-2px); box-shadow: 0 0 24px rgba(191,90,242,0.2); }
+    .ad-card.live-card { border-color: rgba(48,209,88,0.5); box-shadow: 0 0 16px rgba(48,209,88,0.15); }
+    .ad-card.disabled { opacity: 0.55; border-color: var(--border); }
     .ad-preview {
       height: 140px; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative;
@@ -152,7 +168,7 @@
       background: var(--bg2); color: var(--secondary); transition: all 0.2s;
     }
     .btn-sm:hover { background: var(--card2); color: var(--text); border-color: var(--purple); }
-    .btn-sm.toggle-on { background: rgba(48,209,88,0.12); border-color: rgba(48,209,88,0.4); color: var(--green); }
+    .btn-sm.toggle-on { background: rgba(48,209,88,0.12); border-color: rgba(48,209,88,0.4); color: var(--green); box-shadow: 0 0 10px rgba(48,209,88,0.2); }
     .btn-sm.toggle-off { background: rgba(255,0,110,0.1); border-color: rgba(255,0,110,0.3); color: var(--pink); }
     .btn-sm.danger:hover { background: rgba(255,0,110,0.1); border-color: var(--pink); color: var(--pink); }
 
@@ -279,8 +295,8 @@
 <!-- ── Login ─────────────────────────────────────── -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">Ad Manager</div>
-    <div class="login-sub">SpunkArt Network — Admin Only</div>
+    <div class="login-logo">pfp.best</div>
+    <div class="login-sub">Ad Manager — Admin Only 🔐</div>
     <div class="field">
       <label>Email</label>
       <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
@@ -333,29 +349,29 @@
         <span style="color:var(--muted);font-size:0.85rem;">Paste into any site</span>
       </div>
       <div class="embed-grid">
-        <div class="embed-card">
-          <h4>🟣 Banner Ad</h4>
+        <div class="embed-card" style="border-color:rgba(191,90,242,0.4);">
+          <h4 style="color:var(--purple)">🟣 Banner Ad</h4>
           <p>Full-width horizontal strip. Great above/below content sections.</p>
           <div class="code-block" id="code-banner">&lt;div data-ad-slot="banner"&gt;&lt;/div&gt;
 &lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
           <button class="btn-copy" onclick="copyCode('code-banner')">Copy Code</button>
         </div>
-        <div class="embed-card">
-          <h4>🟤 Card Ad</h4>
+        <div class="embed-card" style="border-color:rgba(0,245,212,0.4);">
+          <h4 style="color:var(--cyan)">🟢 Card Ad</h4>
           <p>Square card — fits in sidebars, grids, or between content blocks.</p>
           <div class="code-block" id="code-card">&lt;div data-ad-slot="card"&gt;&lt;/div&gt;
 &lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
           <button class="btn-copy" onclick="copyCode('code-card')">Copy Code</button>
         </div>
-        <div class="embed-card">
-          <h4>🟡 Sticky Bar</h4>
+        <div class="embed-card" style="border-color:rgba(254,228,64,0.4);">
+          <h4 style="color:var(--yellow)">🟡 Sticky Bar</h4>
           <p>Fixed bottom-of-screen bar. Stays visible as users scroll.</p>
           <div class="code-block" id="code-sticky">&lt;div data-ad-slot="sticky"&gt;&lt;/div&gt;
 &lt;script src="https://pfp.best/js/ad-embed.js"&gt;&lt;/script&gt;</div>
           <button class="btn-copy" onclick="copyCode('code-sticky')">Copy Code</button>
         </div>
-        <div class="embed-card">
-          <h4>🔵 All Slots</h4>
+        <div class="embed-card" style="border-color:rgba(255,0,110,0.4);">
+          <h4 style="color:var(--pink)">⚡ All Slots</h4>
           <p>Add all three slots at once. The script only loads once.</p>
           <div class="code-block" id="code-all">&lt;div data-ad-slot="banner"&gt;&lt;/div&gt;
 &lt;div data-ad-slot="card"&gt;&lt;/div&gt;
@@ -596,7 +612,7 @@ function adCard(id, ad) {
        </div>`;
 
   return `
-  <div class="ad-card${isOn ? '' : ' disabled'}" id="adcard-${id}">
+  <div class="ad-card${isOn ? ' live-card' : ' disabled'}" id="adcard-${id}">
     <div class="ad-preview">
       ${previewHtml}
       <span class="ad-type-badge ${typeClass}">${typeLabel}</span>
