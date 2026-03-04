@@ -1133,6 +1133,9 @@ h1, h2, h3, h4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 .aff-card {
   display: flex;
@@ -1187,6 +1190,17 @@ h1, h2, h3, h4 {
   color: var(--neon-cyan);
   white-space: nowrap;
   flex-shrink: 0;
+}
+.aff-featured {
+  border-color: rgba(191,90,242,0.4);
+  background: rgba(191,90,242,0.06);
+}
+.aff-featured:hover {
+  border-color: var(--neon-purple);
+  box-shadow: 0 4px 20px rgba(191,90,242,0.2);
+}
+.aff-featured .aff-info strong {
+  color: var(--neon-purple);
 }
 @media (max-width: 900px) {
   .affiliate-grid { grid-template-columns: repeat(2, 1fr); }
