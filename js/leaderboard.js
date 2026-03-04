@@ -68,9 +68,9 @@ const Leaderboard = {
         pfps = pfps.filter(p => p.chain === this.currentChain);
       }
 
-      // Sort by rank for top-rated
+      // Sort by actual user ratings for top-rated
       if (this.currentTab === 'top-rated') {
-        pfps.sort((a, b) => (a.rank || 999) - (b.rank || 999));
+        pfps.sort((a, b) => (b.ratingAvg || 0) - (a.ratingAvg || 0) || (b.ratingCount || 0) - (a.ratingCount || 0));
       }
 
       // For "most roasted" sort by comment count + downvotes

@@ -85,8 +85,8 @@ async function loadTrendingByChain(chain) {
   try {
     const pfps = await fetchPfps('score', 150);
     let filtered = chain === 'all' ? pfps : pfps.filter(p => p.chain === chain);
-    // Sort by rank field if available, otherwise by score
-    filtered.sort((a, b) => (a.rank || 999) - (b.rank || 999));
+    // Sort by actual user ratings (ratingAvg), then by combined score as tiebreaker
+    filtered.sort((a, b) => (b.ratingAvg || 0) - (a.ratingAvg || 0) || (b.score || 0) - (a.score || 0));
     filtered = filtered.slice(0, 50);
     if (filtered.length === 0) {
       grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">🎨</span><p>No PFPs found. Upload yours!</p></div>';
@@ -273,6 +273,24 @@ async function loadTrending() {
   await loadTrendingByChain(currentChainFilter);
 }
 
+// Homepage: Load newest user uploads
+async function loadNewestPfps() {
+  const container = document.getElementById('newest-grid');
+  if (!container) return;
+
+  try {
+    const pfps = await fetchPfps('uploadedAt', 8);
+    if (pfps.length === 0) {
+      container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">📸</span><p>Be the first to upload a PFP!</p></div>';
+      return;
+    }
+    // Newest first (fetchPfps already reverses, so latest are first)
+    container.innerHTML = pfps.map(pfp => renderPfpCard(pfp, null)).join('');
+  } catch (err) {
+    console.error('Failed to load newest:', err);
+  }
+}
+
 // Homepage: Load PFP of the Day (highest score overall)
 async function loadPfpOfDay() {
   const container = document.getElementById('pfp-of-day');
@@ -341,6 +359,7 @@ async function loadCategoryPfps(category) {
 document.addEventListener('DOMContentLoaded', () => {
   loadTrending();
   loadPfpOfDay();
+  loadNewestPfps();
 
   handleHash();
   window.addEventListener('hashchange', handleHash);
