@@ -300,6 +300,17 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
 
 <div class="container">
 
+  <!-- Community Uploads: Independent REST API section — no Firebase SDK needed -->
+  <section id="community-section" style="padding:40px 0">
+    <div class="section-header">
+      <h2>🖼️ Community Uploads</h2>
+      <span id="upload-count" style="font-size:.82rem;color:var(--muted)"></span>
+    </div>
+    <div class="pfp-grid" id="community-grid">
+      <div class="loading-spinner"><div class="spinner"></div> Loading...</div>
+    </div>
+  </section>
+
   <!-- How It Works -->
   <div class="hiw">
     <div class="hiw-title">How It Works</div>
@@ -477,6 +488,68 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
 <script src="js/referral.js"></script>
 
 <script>
+// ── Community Uploads — pure REST fetch, zero SDK dependency ──────────────
+(function() {
+  var DB = 'https://predict-network-ec767-default-rtdb.firebaseio.com/pfpbest/pfps.json?orderBy=%22%24key%22';
+  var grid = document.getElementById('community-grid');
+  var countEl = document.getElementById('upload-count');
+
+  function renderCard(pfp) {
+    var url = pfp.imageUrl || '';
+    var title = (pfp.title || 'Untitled PFP').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var rating = (pfp.ratingAvg || 0).toFixed(1);
+    var chain = pfp.chain || '';
+    var chainColor = {BTC:'#ff9900',ETH:'#6370ff',SOL:'#9945ff',art:'#00f5d4'}[chain] || '#888';
+    return '<div class="pfp-card" onclick="(typeof openPfpModal===\'function\'&&openPfpModal(\''+pfp.id+'\'))">'
+      + '<div class="pfp-card-image">'
+      + '<img src="'+url+'" alt="'+title+'" loading="lazy" decoding="async" onerror="this.src=\'https://api.dicebear.com/7.x/shapes/svg?seed='+pfp.id+'\'">'
+      + (chain ? '<span class="pfp-card-chain" style="position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.75);border-radius:5px;padding:2px 6px;font-size:.65rem;font-weight:700;color:'+chainColor+'">'+chain+'</span>' : '')
+      + '</div>'
+      + '<div class="pfp-card-info">'
+      + '<div class="pfp-card-title">'+title+'</div>'
+      + '<div class="pfp-card-meta">'
+      + '<div class="pfp-card-rating"><span style="color:#ffd60a">★</span> <span class="rating-value">'+rating+'</span></div>'
+      + '<div class="pfp-card-votes">'
+      + '<span class="vote-up" onclick="event.stopPropagation();(typeof quickVote===\'function\'&&quickVote(\''+pfp.id+'\',\'up\'))">▲ '+(pfp.upvotes||0)+'</span>'
+      + '<span class="vote-down" onclick="event.stopPropagation();(typeof quickVote===\'function\'&&quickVote(\''+pfp.id+'\',\'down\'))">▼ '+(pfp.downvotes||0)+'</span>'
+      + '</div></div>'
+      + '<div class="pfp-card-share">'
+      + '<button onclick="event.stopPropagation();(typeof shareToX===\'function\'&&shareToX(\''+pfp.id+'\',\''+title+'\','+rating+'))">𝕏</button>'
+      + '<button onclick="event.stopPropagation();(typeof copyPfpLink===\'function\'&&copyPfpLink(\''+pfp.id+'\'))">🔗</button>'
+      + '</div></div></div>';
+  }
+
+  function loadCommunity() {
+    if (!grid) return;
+    fetch(DB)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data || typeof data !== 'object') { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>No uploads yet.</p></div>'; return; }
+        var pfps = Object.values(data).filter(function(p) {
+          return p && p.id && p.imageUrl && (!p.uploadedBy || !p.uploadedBy.startsWith('seed_'));
+        });
+        // Sort: highest rated first, then newest
+        pfps.sort(function(a,b){ return (b.ratingAvg||0)-(a.ratingAvg||0) || (b.uploadedAt||0)-(a.uploadedAt||0); });
+        if (pfps.length === 0) {
+          grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><span class="empty-icon">📸</span><p>Be the first to upload!</p></div>';
+          return;
+        }
+        if (countEl) countEl.textContent = pfps.length + ' photos from the community';
+        grid.innerHTML = pfps.map(renderCard).join('');
+        // Update stat
+        var statEl = document.getElementById('stat-total');
+        if (statEl) statEl.textContent = Object.keys(data).length;
+      })
+      .catch(function(e) {
+        console.error('[community] fetch failed', e);
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>Refresh to try again.</p></div>';
+      });
+  }
+
+  loadCommunity();
+  setInterval(loadCommunity, 10000);
+})();
+
 // Sync vtr-count-hero with vtr-count
 function syncHeroCount(){
   var c=document.getElementById('vtr-count');

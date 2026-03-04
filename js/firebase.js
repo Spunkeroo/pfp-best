@@ -235,17 +235,40 @@ function calculateScore(pfp) {
   return (wilson * 5 + ratingAvg) / 2;
 }
 
-// Fetch PFPs — full scan + client-side sort (no index required)
+// Fetch PFPs — SDK with REST API fallback. Never fails.
 async function fetchPfps(orderBy, limit = 20, category = null) {
-  const snap = await pfpsRef.once('value');
-  const pfps = [];
-  snap.forEach(child => {
-    const pfp = child.val();
-    if (!pfp || !pfp.id || !pfp.imageUrl) return;
-    if (!category || category === 'all' || pfp.category === category) {
-      pfps.push(pfp);
+  let pfps = [];
+  try {
+    // Try Firebase SDK with 8-second timeout
+    const snap = await Promise.race([
+      pfpsRef.once('value'),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000))
+    ]);
+    snap.forEach(child => {
+      const pfp = child.val();
+      if (!pfp || !pfp.id || !pfp.imageUrl) return;
+      if (!category || category === 'all' || pfp.category === category) {
+        pfps.push(pfp);
+      }
+    });
+  } catch (sdkErr) {
+    // SDK failed — fall back to direct REST API (always works)
+    console.warn('[pfp.best] Firebase SDK fallback to REST:', sdkErr.message);
+    try {
+      const res = await fetch('https://predict-network-ec767-default-rtdb.firebaseio.com/pfpbest/pfps.json?orderBy=%22%24key%22');
+      const data = await res.json();
+      if (data && typeof data === 'object') {
+        Object.values(data).forEach(pfp => {
+          if (!pfp || !pfp.id || !pfp.imageUrl) return;
+          if (!category || category === 'all' || pfp.category === category) {
+            pfps.push(pfp);
+          }
+        });
+      }
+    } catch (restErr) {
+      console.error('[pfp.best] REST fallback also failed:', restErr);
     }
-  });
+  }
   pfps.sort((a, b) => (b[orderBy] || 0) - (a[orderBy] || 0));
   return pfps.slice(0, limit);
 }

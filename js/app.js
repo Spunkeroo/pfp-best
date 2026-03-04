@@ -279,18 +279,19 @@ async function loadTrending() {
   await loadTrendingByChain(currentChainFilter);
 }
 
-// Homepage: Load newest user uploads
+// Homepage: Load newest user uploads (seed images excluded)
 async function loadNewestPfps() {
   const container = document.getElementById('newest-grid');
   if (!container) return;
 
   try {
-    const pfps = await fetchPfps('uploadedAt', 8);
+    const all = await fetchPfps('uploadedAt', 200);
+    // Filter out seeded images — show only real user uploads
+    const pfps = all.filter(p => !p.uploadedBy || !p.uploadedBy.startsWith('seed_')).slice(0, 20);
     if (pfps.length === 0) {
       container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">📸</span><p>Be the first to upload a PFP!</p></div>';
       return;
     }
-    // Newest first (fetchPfps already reverses, so latest are first)
     container.innerHTML = pfps.map(pfp => renderPfpCard(pfp, null)).join('');
   } catch (err) {
     console.error('Failed to load newest:', err);
