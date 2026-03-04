@@ -65,16 +65,16 @@
 
   <!-- Hero -->
   <section class="hero">
-    <span class="hero-badge">🔥 Upload. Rate. Roast. Repeat.</span>
+    <span class="hero-badge">🔥 Free • Instant • No Login</span>
     <h1>Rate My <span class="gradient-text">PFP</span></h1>
-    <p class="hero-subtitle">Drop your profile picture. Get rated 1–10 by real people. Climb the leaderboard.</p>
+    <p class="hero-subtitle">Upload your profile picture. The community rates it 1–10. Climb the leaderboard.</p>
 
     <!-- Upload Zone -->
     <div class="upload-zone" id="upload-zone">
       <div class="upload-zone-content" id="upload-content">
         <span class="upload-icon">📸</span>
-        <h3>Drop your PFP here</h3>
-        <p>Drag & drop, paste, or click to browse</p>
+        <h3>Tap or drop your PFP</h3>
+        <p>JPG · PNG · GIF · WebP &nbsp;|&nbsp; Max 5MB</p>
         <span class="upload-btn">Choose Image</span>
       </div>
       <div class="upload-preview" id="upload-preview">
@@ -87,29 +87,44 @@
 
     <!-- Upload Form -->
     <div class="upload-form" id="upload-form">
+
+      <!-- Step 1: Chain — required, most prominent -->
       <div class="form-group">
-        <label>Title (optional)</label>
-        <input type="text" id="pfp-title" placeholder="Name your PFP..." maxlength="60">
-      </div>
-      <div class="form-group">
-        <label>Blockchain / Origin <span style="color:var(--neon-pink);font-size:0.75rem;">* required</span></label>
-        <div class="tag-pills" id="chain-pills">
-          <span class="tag-pill" data-chain="BTC">₿ Bitcoin</span>
-          <span class="tag-pill" data-chain="ETH">⟠ Ethereum</span>
-          <span class="tag-pill" data-chain="SOL">◎ Solana</span>
-          <span class="tag-pill" data-chain="art">🖼️ Art Only</span>
+        <label class="form-label-big">Where is this PFP from? <span class="required-star">* required</span></label>
+        <div class="chain-selector" id="chain-pills">
+          <button class="chain-btn" data-chain="BTC" type="button">
+            <span class="chain-icon">₿</span>
+            <span class="chain-name">Bitcoin</span>
+          </button>
+          <button class="chain-btn" data-chain="ETH" type="button">
+            <span class="chain-icon">⟠</span>
+            <span class="chain-name">Ethereum</span>
+          </button>
+          <button class="chain-btn" data-chain="SOL" type="button">
+            <span class="chain-icon">◎</span>
+            <span class="chain-name">Solana</span>
+          </button>
+          <button class="chain-btn" data-chain="art" type="button">
+            <span class="chain-icon">🖼️</span>
+            <span class="chain-name">Art Only</span>
+          </button>
         </div>
-        <div id="chain-error" style="color:var(--neon-pink);font-size:0.78rem;margin-top:4px;display:none;">Please select a blockchain or Art Only</div>
+        <div id="chain-error" class="field-error">👆 Pick one to continue</div>
       </div>
+
+      <!-- Step 2: Title (optional) -->
       <div class="form-group">
-        <label>Style</label>
-        <div class="tag-pills">
-          <span class="tag-pill selected" data-category="pfp">🎨 PFP</span>
-          <span class="tag-pill" data-category="funny">😂 Funny</span>
-          <span class="tag-pill" data-category="aesthetic">✨ Aesthetic</span>
-          <span class="tag-pill" data-category="art">🖼️ Art</span>
-        </div>
+        <input type="text" id="pfp-title" class="pfp-title-input" placeholder="Give it a name (optional)" maxlength="60">
       </div>
+
+      <!-- Hidden category pills — default pfp -->
+      <div style="display:none;" id="category-pills">
+        <span class="tag-pill selected" data-category="pfp">🎨 PFP</span>
+        <span class="tag-pill" data-category="funny">😂 Funny</span>
+        <span class="tag-pill" data-category="aesthetic">✨ Aesthetic</span>
+        <span class="tag-pill" data-category="art">🖼️ Art</span>
+      </div>
+
       <button class="submit-btn" id="submit-pfp">Submit for Rating ⚡</button>
     </div>
   </section>
@@ -307,6 +322,7 @@
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>
   <script src="js/share.js"></script>
+  <script src="js/ai-rater.js"></script>
   <script src="js/moderation.js"></script>
   <script src="js/app.js"></script>
   <script src="js/upload.js"></script>

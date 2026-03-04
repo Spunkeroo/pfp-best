@@ -56,7 +56,7 @@
     uploadForm.classList.remove('active');
     uploadInput.value = '';
     previewImg.src = '';
-    document.querySelectorAll('#chain-pills .tag-pill').forEach(p => p.classList.remove('selected'));
+    document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('selected'));
     const err = document.getElementById('chain-error');
     if (err) err.style.display = 'none';
   }
@@ -122,21 +122,22 @@
   });
 
   // ── Chain selection (required) ───────────────────────────────────────────
-  const chainPills = document.querySelectorAll('#chain-pills .tag-pill');
-  chainPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      chainPills.forEach(p => p.classList.remove('selected'));
-      pill.classList.add('selected');
-      selectedChain = pill.dataset.chain;
+  const chainBtns = document.querySelectorAll('.chain-btn');
+  chainBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      chainBtns.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedChain = btn.dataset.chain;
       const err = document.getElementById('chain-error');
       if (err) err.style.display = 'none';
     });
   });
 
   // ── Style/category selection ─────────────────────────────────────────────
-  document.querySelectorAll('.tag-pill:not(#chain-pills .tag-pill)').forEach(pill => {
+  const catPills = document.querySelectorAll('#category-pills .tag-pill');
+  catPills.forEach(pill => {
     pill.addEventListener('click', () => {
-      document.querySelectorAll('.tag-pill:not(#chain-pills .tag-pill)').forEach(p => p.classList.remove('selected'));
+      catPills.forEach(p => p.classList.remove('selected'));
       pill.classList.add('selected');
       selectedCategory = pill.dataset.category;
     });

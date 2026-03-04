@@ -168,6 +168,8 @@ async function openPfpModal(pfpId) {
       </div>
     </div>
 
+    ${typeof AIRater !== 'undefined' ? renderAiRaterButton(pfpId, pfp.chain || 'Art') : ''}
+
     <div class="share-buttons">
       <button class="share-btn share-btn-x" onclick="ShareCard.shareToX(currentModalPfp)">
         𝕏 Share on X
