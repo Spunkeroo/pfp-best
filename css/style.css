@@ -1296,171 +1296,161 @@ h1, h2, h3, h4 {
 }
 
 /* ============================================
+   Mobile Bottom Nav
+   ============================================ */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  background: rgba(18, 18, 26, 0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+}
+
+.mobile-bottom-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 10px;
+  transition: all var(--transition);
+  min-width: 56px;
+  text-align: center;
+}
+
+.mobile-nav-item .nav-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item.active {
+  color: var(--neon-purple);
+}
+
+.mobile-nav-upload {
+  background: var(--gradient-main);
+  color: #000 !important;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+/* ============================================
    Responsive
    ============================================ */
 @media (max-width: 768px) {
+  /* Show bottom nav, hide top nav links */
+  .mobile-bottom-nav {
+    display: block;
+  }
+
+  /* Add padding so content doesn't hide behind bottom nav */
+  body {
+    padding-bottom: 72px;
+  }
+
   .nav-links {
-    display: none;
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 15, 0.98);
-    backdrop-filter: blur(20px);
-    flex-direction: column;
-    padding: 16px;
-    border-bottom: 1px solid var(--border-color);
-    z-index: 99;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .nav-links a {
-    padding: 12px 16px;
-    font-size: 1rem;
+    display: none !important; /* always hidden on mobile — using bottom nav */
   }
 
   .mobile-menu-btn {
-    display: block;
-    min-width: 44px;
-    min-height: 44px;
+    display: none; /* no hamburger needed with bottom nav */
   }
 
+  /* Compact hero */
   .hero {
-    padding: 48px 16px 40px;
+    padding: 32px 16px 24px;
   }
 
+  .hero-badge {
+    margin-bottom: 12px;
+    font-size: 0.8rem;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  /* Upload zone — compact and clean */
   .upload-zone {
-    padding: 32px 20px;
-    margin: 0 16px 32px;
+    padding: 28px 20px;
+    margin: 0 12px 24px;
     max-width: none;
+  }
+
+  .upload-icon {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+  }
+
+  .upload-zone h3 {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+
+  .upload-zone p {
+    font-size: 0.82rem;
+    margin-bottom: 14px;
   }
 
   .upload-form {
     max-width: none;
-    margin: -24px 16px 32px;
+    margin: -16px 12px 24px;
+    padding: 20px;
   }
 
-  .pfp-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 16px;
+  /* Category chips — horizontal scroll, no wrap */
+  .category-grid {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
   }
 
-  .pfp-card-share button {
-    padding: 8px 4px;
-    min-height: 36px;
-  }
-
-  .vote-up, .vote-down {
-    padding: 6px 10px;
-    min-height: 36px;
-  }
-
-  .pfp-of-day-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 24px;
-  }
-
-  .pfp-of-day-image {
-    width: 140px;
-    height: 140px;
-  }
-
-  .footer-inner {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .affiliate-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .modal-overlay {
-    padding: 12px;
-  }
-
-  .modal-content {
-    max-height: 95vh;
-    border-radius: var(--radius);
-  }
-
-  .share-buttons {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .share-btn {
-    flex: 1;
-    min-width: 120px;
-    justify-content: center;
-  }
-
-  .vote-buttons {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .vote-btn {
-    flex: 1;
-    justify-content: center;
-    min-height: 44px;
-  }
-
-  .leaderboard-tabs {
-    padding: 0 16px;
-  }
-
-  .leaderboard-tab {
-    padding: 10px 14px;
-    font-size: 0.85rem;
-    min-height: 44px;
-  }
-
-  .section-header {
-    padding: 0 16px;
-  }
-
-  .filter-bar {
-    padding: 0 16px;
-  }
-
-  .filter-select {
-    width: 100%;
-    min-height: 44px;
-  }
-
-  .page-header {
-    padding: 40px 16px 32px;
-  }
-
-  .rating-stars .star {
-    font-size: 1.6rem;
-  }
-
-  .tag-pills {
-    gap: 6px;
-  }
-
-  .tag-pill {
-    padding: 8px 14px;
-    min-height: 36px;
+  .category-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .category-chip {
-    min-height: 40px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 8px 14px;
+    font-size: 0.85rem;
   }
-}
 
-@media (max-width: 480px) {
+  /* PFP grid — 2 cols, tight */
   .pfp-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
     padding: 0 12px;
+  }
+
+  /* Simplified card on mobile — hide share row */
+  .pfp-card-share {
+    display: none;
   }
 
   .pfp-card-info {
@@ -1468,28 +1458,159 @@ h1, h2, h3, h4 {
   }
 
   .pfp-card-title {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    margin-bottom: 6px;
   }
 
-  .hero h1 {
-    font-size: 2rem;
+  .pfp-card-meta {
+    flex-direction: row;
+    gap: 6px;
   }
 
-  .pfp-card-share {
-    gap: 4px;
+  .pfp-card-votes {
+    font-size: 0.78rem;
+    gap: 6px;
   }
 
-  .pfp-card-share button {
-    padding: 8px 2px;
-    font-size: 0.75rem;
+  /* PFP of the Day — stacked, centered */
+  .pfp-of-day-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 16px;
   }
 
-  .modal-body {
+  .pfp-of-day-image {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  /* Leaderboard tabs — scrollable */
+  .leaderboard-tabs {
+    padding: 0 12px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .leaderboard-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .leaderboard-tab {
+    padding: 9px 14px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 40px;
+  }
+
+  /* Section headers */
+  .section-header {
+    padding: 0 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Affiliate — stacked */
+  .affiliate-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
     padding: 16px;
   }
 
+  .affiliate-cta {
+    width: 100%;
+    text-align: center;
+    padding: 12px 24px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Modal — bottom sheet on mobile */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-height: 92vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  /* Pull handle on modal */
+  .modal-content::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    margin: 10px auto 0;
+  }
+
+  .modal-body {
+    padding: 16px 20px;
+  }
+
+  /* Bigger tappable stars in modal */
+  .rating-stars {
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+
+  .rating-stars .star {
+    font-size: 1.8rem;
+    padding: 4px;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  /* Vote buttons */
+  .vote-buttons {
+    gap: 8px;
+  }
+
+  .vote-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 0.9rem;
+  }
+
+  /* Share buttons */
+  .share-buttons {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .share-btn {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+
+  /* Comment input */
   .comment-input-wrap {
     flex-direction: column;
+    gap: 8px;
   }
 
   .comment-input-wrap button {
@@ -1498,18 +1619,95 @@ h1, h2, h3, h4 {
     min-height: 44px;
   }
 
+  /* Forms */
+  .filter-bar {
+    padding: 0 12px;
+  }
+
+  .filter-select {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .page-header {
+    padding: 32px 16px 24px;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .tag-pills {
+    gap: 6px;
+  }
+
+  .tag-pill {
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    min-height: 38px;
+  }
+
   .submit-btn {
     min-height: 52px;
     font-size: 1rem;
   }
 
-  .affiliate-cta {
-    width: 100%;
-    text-align: center;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Footer — single col */
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer {
+    padding: 32px 16px;
+    margin-top: 32px;
+  }
+
+  /* Toast bottom position above bottom nav */
+  .toast-container {
+    bottom: 84px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    max-width: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .pfp-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .pfp-card-info {
+    padding: 8px;
+  }
+
+  .pfp-card-title {
+    font-size: 0.78rem;
+  }
+
+  .rating-value {
+    font-size: 0.8rem;
+  }
+
+  .pfp-card-votes {
+    font-size: 0.72rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr;
   }
 }
 
