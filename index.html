@@ -43,6 +43,13 @@
 .tip-tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:.75rem;}.tip-tab{padding:.3rem 1rem;border-radius:999px;border:1px solid #7c3aed;background:transparent;color:#c084fc;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}.tip-tab.active{background:#7c3aed;color:#fff;border-color:#a855f7;}
 @media(max-width:600px){.tip-spunk-btn{padding:0.35rem 0.75rem;font-size:0.78rem;}.tip-modal{padding:1.5rem;}}
 </style>
+<style id="vtr-css">
+.vtr-badge{position:fixed;bottom:76px;left:12px;z-index:9997;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:5px 12px 5px 8px;font-size:0.72rem;font-weight:700;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;pointer-events:none;transition:opacity 0.4s;letter-spacing:0.3px;box-shadow:0 2px 16px rgba(0,0,0,0.4);}
+.vtr-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;animation:vtrPulse 2s ease-in-out infinite;}
+@keyframes vtrPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.5);}60%{box-shadow:0 0 0 5px rgba(34,197,94,0);}}
+@media(max-width:768px){.vtr-badge{bottom:64px;left:8px;font-size:0.68rem;padding:4px 10px 4px 7px;}}
+@media(max-width:400px){.vtr-badge{bottom:60px;}}
+</style>
 </head>
 <body>
   <div class="bg-glow"></div>
@@ -228,14 +235,85 @@
     </div>
   </section>
 
-  <!-- Affiliate -->
-  <section class="affiliate-banner">
-    <div class="affiliate-card">
-      <div class="affiliate-card-text">
-        <h4>🎨 Want a custom PFP?</h4>
-        <p>Commission a professional artist on Fiverr</p>
-      </div>
-      <a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener" class="affiliate-cta">Browse Artists →</a>
+  <!-- Affiliate Grid -->
+  <section class="affiliate-section">
+    <div class="section-header" style="max-width:1100px;margin:0 auto 20px;padding:0 24px;">
+      <h2><span class="emoji">🛒</span> Create & Trade PFPs</h2>
+    </div>
+    <div class="affiliate-grid">
+      <a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener" class="aff-card">
+        <div class="aff-icon">🎨</div>
+        <div class="aff-info">
+          <strong>Fiverr Artists</strong>
+          <span>Commission a custom PFP from $5</span>
+        </div>
+        <span class="aff-cta">Browse →</span>
+      </a>
+      <a href="https://www.midjourney.com/" target="_blank" rel="noopener" class="aff-card">
+        <div class="aff-icon">🤖</div>
+        <div class="aff-info">
+          <strong>Midjourney AI</strong>
+          <span>Generate stunning AI art PFPs</span>
+        </div>
+        <span class="aff-cta">Create →</span>
+      </a>
+      <a href="https://www.canva.com/pro/" target="_blank" rel="noopener" class="aff-card">
+        <div class="aff-icon">✏️</div>
+        <div class="aff-info">
+          <strong>Canva Pro</strong>
+          <span>Design your own PFP in minutes</span>
+        </div>
+        <span class="aff-cta">Design →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SpunkArt Empire -->
+  <section class="empire-section">
+    <div class="section-header" style="max-width:1100px;margin:0 auto 20px;padding:0 24px;">
+      <h2><span class="emoji">🌐</span> More from SpunkArt</h2>
+    </div>
+    <div class="empire-grid">
+      <a href="https://spunk.bet" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🎰</div>
+        <strong>Spunk.Bet</strong>
+        <span>Free Bitcoin casino. Earn SPUNK runes daily.</span>
+      </a>
+      <a href="https://predict.horse" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🐎</div>
+        <strong>Predict.Horse</strong>
+        <span>Horse race predictions &amp; betting insights.</span>
+      </a>
+      <a href="https://predict.pics" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🖼️</div>
+        <strong>Predict.Pics</strong>
+        <span>Predict which images go viral next.</span>
+      </a>
+      <a href="https://scam.wiki" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🔍</div>
+        <strong>Scam.Wiki</strong>
+        <span>Community scam detection &amp; alerts.</span>
+      </a>
+      <a href="https://spunkart.com" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🎨</div>
+        <strong>SpunkArt.com</strong>
+        <span>The original SpunkArt portfolio &amp; brand.</span>
+      </a>
+      <a href="https://predict.gay" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">🌈</div>
+        <strong>Predict.Gay</strong>
+        <span>LGBTQ+ community prediction markets.</span>
+      </a>
+      <a href="https://spunk.codes" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">💻</div>
+        <strong>Spunk.Codes</strong>
+        <span>Discount codes &amp; deals for everything.</span>
+      </a>
+      <a href="https://spunk.pics" target="_blank" rel="noopener" class="empire-card">
+        <div class="empire-icon">📸</div>
+        <strong>Spunk.Pics</strong>
+        <span>Photo sharing &amp; community ratings.</span>
+      </a>
     </div>
   </section>
 
@@ -273,11 +351,21 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Make a PFP</h4>
+        <h4>Create &amp; Trade</h4>
         <ul>
-          <li><a href="https://www.canva.com/pro/" target="_blank" rel="noopener">Canva Pro</a></li>
-          <li><a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener">Fiverr Artists</a></li>
+          <li><a href="https://www.fiverr.com/categories/graphics-design/illustration" target="_blank" rel="noopener">Fiverr Custom PFP</a></li>
           <li><a href="https://www.midjourney.com/" target="_blank" rel="noopener">Midjourney AI</a></li>
+          <li><a href="https://www.canva.com/pro/" target="_blank" rel="noopener">Canva Pro</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>SpunkArt Empire</h4>
+        <ul>
+          <li><a href="https://spunk.bet" target="_blank" rel="noopener">Spunk.Bet Casino</a></li>
+          <li><a href="https://predict.horse" target="_blank" rel="noopener">Predict.Horse</a></li>
+          <li><a href="https://predict.pics" target="_blank" rel="noopener">Predict.Pics</a></li>
+          <li><a href="https://scam.wiki" target="_blank" rel="noopener">Scam.Wiki</a></li>
+          <li><a href="https://spunkart.com" target="_blank" rel="noopener">SpunkArt.com</a></li>
         </ul>
       </div>
     </div>
@@ -367,6 +455,45 @@
     }).catch(function(){});
   };
   document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeTipModal();});
+})();
+</script>
+
+<div class="vtr-badge" id="vtr-badge"><span class="vtr-dot"></span><span id="vtr-count">...</span></div>
+<script id="vtr-js">
+(function(){
+  if(window._vtrInit)return;window._vtrInit=true;
+  var DB='https://predict-network-ec767-default-rtdb.firebaseio.com';
+  var site=(location.hostname||'local').replace(/\./g,'_').replace(/[#$\[\]]/g,'_');
+  var sid='s'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+  var sRef=DB+'/vtr/'+site+'/s/'+sid+'.json';
+  var allRef=DB+'/vtr/'+site+'/s.json';
+  var now=Date.now;
+
+  function ping(){fetch(sRef,{method:'PUT',body:JSON.stringify({t:now()}),headers:{'Content-Type':'application/json'}}).catch(function(){});}
+
+  function refresh(){
+    fetch(allRef).then(function(r){return r.json();}).then(function(d){
+      var n=1;
+      if(d&&typeof d==='object'){
+        var vals=Object.values(d);
+        n=Math.max(1,vals.filter(function(v){return v&&v.t&&(now()-v.t)<25000;}).length);
+        // prune stale sessions
+        Object.entries(d).forEach(function(e){if(e[1]&&e[1].t&&(now()-e[1].t)>60000)fetch(DB+'/vtr/'+site+'/s/'+e[0]+'.json',{method:'DELETE'}).catch(function(){});});
+      }
+      var el=document.getElementById('vtr-count');
+      if(el)el.textContent=n+(n===1?' visitor':' visitors')+' online';
+    }).catch(function(){var el=document.getElementById('vtr-count');if(el)el.textContent='1 visitor online';});
+  }
+
+  // daily hit count
+  var day=new Date().toISOString().slice(0,10);
+  var hRef=DB+'/vtr/'+site+'/hits/'+day+'.json';
+  fetch(hRef).then(function(r){return r.json();}).then(function(n){fetch(hRef,{method:'PUT',body:JSON.stringify((n||0)+1),headers:{'Content-Type':'application/json'}}).catch(function(){});}).catch(function(){});
+
+  window.addEventListener('pagehide',function(){fetch(sRef,{method:'DELETE',keepalive:true}).catch(function(){});});
+
+  ping();refresh();
+  setInterval(function(){ping();refresh();},10000);
 })();
 </script>
 </body>
