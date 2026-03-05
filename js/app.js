@@ -22,7 +22,74 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 
-// Render PFP card HTML
+// Build a PFP card as a real DOM element — safe for base64 imageUrls
+function makePfpCardEl(pfp, rank) {
+  const card = document.createElement('div');
+  card.className = 'pfp-card';
+  card.dataset.id = pfp.id;
+
+  const rating = (pfp.ratingAvg || 0).toFixed(1);
+  const chain = pfp.chain || '';
+  const safeTitle = escapeHtml(pfp.title || 'Untitled PFP');
+
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'pfp-card-image';
+  imgWrap.onclick = () => openPfpModal(pfp.id);
+
+  const img = document.createElement('img');
+  img.alt = safeTitle;
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.onerror = function() { this.src = 'https://api.dicebear.com/7.x/shapes/svg?seed=' + pfp.id; };
+  img.src = pfp.imageUrl;
+  imgWrap.appendChild(img);
+
+  if (pfp.category) {
+    const badge = document.createElement('span');
+    badge.className = 'pfp-card-badge';
+    badge.textContent = pfp.category;
+    imgWrap.appendChild(badge);
+  }
+  if (chain) {
+    const cb = document.createElement('span');
+    cb.className = `pfp-card-chain chain-${chain.toLowerCase()}`;
+    cb.textContent = chain;
+    imgWrap.appendChild(cb);
+  }
+  if (rank) {
+    const rankEl = document.createElement('span');
+    rankEl.className = 'pfp-card-rank';
+    rankEl.textContent = rank;
+    imgWrap.appendChild(rankEl);
+  }
+  card.appendChild(imgWrap);
+
+  const info = document.createElement('div');
+  info.className = 'pfp-card-info';
+  info.innerHTML = `
+    <div class="pfp-card-title" style="cursor:pointer">${safeTitle}</div>
+    <div class="pfp-card-meta">
+      <div class="pfp-card-rating"><span class="star-display">★</span><span class="rating-value">${rating}</span></div>
+      <div class="pfp-card-votes">
+        <span class="vote-up" title="Upvote">▲ ${pfp.upvotes || 0}</span>
+        <span class="vote-down" title="Downvote">▼ ${pfp.downvotes || 0}</span>
+      </div>
+    </div>
+    <div class="pfp-card-share">
+      <button title="Share on X">𝕏 Share</button>
+      <button title="Copy Link">🔗 Copy</button>
+    </div>
+  `;
+  info.querySelector('.pfp-card-title').onclick = () => openPfpModal(pfp.id);
+  info.querySelector('.vote-up').onclick = e => { e.stopPropagation(); quickVote(pfp.id, 'up'); };
+  info.querySelector('.vote-down').onclick = e => { e.stopPropagation(); quickVote(pfp.id, 'down'); };
+  info.querySelectorAll('.pfp-card-share button')[0].onclick = e => { e.stopPropagation(); shareToX(pfp.id, pfp.title || 'PFP', rating); };
+  info.querySelectorAll('.pfp-card-share button')[1].onclick = e => { e.stopPropagation(); copyPfpLink(pfp.id); };
+  card.appendChild(info);
+  return card;
+}
+
+// Render PFP card HTML (kept for modal/other uses)
 function renderPfpCard(pfp, rank) {
   const rating = (pfp.ratingAvg || 0).toFixed(1);
   const chain = pfp.chain || '';
@@ -103,7 +170,8 @@ async function loadTrendingByChain(chain) {
       grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">🎨</span><p>No PFPs found. Upload yours!</p></div>';
       return;
     }
-    grid.innerHTML = filtered.map((pfp, i) => renderPfpCard(pfp, i + 1)).join('');
+    grid.innerHTML = '';
+    filtered.forEach((pfp, i) => grid.appendChild(makePfpCardEl(pfp, i + 1)));
   } catch (err) {
     console.error('Load failed:', err);
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p>Failed to load. Refresh to try again.</p></div>';
@@ -292,7 +360,8 @@ async function loadNewestPfps() {
       container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">📸</span><p>Be the first to upload a PFP!</p></div>';
       return;
     }
-    container.innerHTML = pfps.map(pfp => renderPfpCard(pfp, null)).join('');
+    container.innerHTML = '';
+    pfps.forEach(pfp => container.appendChild(makePfpCardEl(pfp, null)));
   } catch (err) {
     console.error('Failed to load newest:', err);
   }
@@ -356,7 +425,8 @@ async function loadCategoryPfps(category) {
       `;
       return;
     }
-    grid.innerHTML = pfps.map((pfp, i) => renderPfpCard(pfp, i + 1)).join('');
+    grid.innerHTML = '';
+    pfps.forEach((pfp, i) => grid.appendChild(makePfpCardEl(pfp, i + 1)));
   } catch (err) {
     grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><p>Failed to load. Refresh to try again.</p></div>';
   }
