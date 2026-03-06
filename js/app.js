@@ -27,6 +27,7 @@ function makePfpCardEl(pfp, rank) {
   const card = document.createElement('div');
   card.className = 'pfp-card';
   card.dataset.id = pfp.id;
+  card.dataset.chain = pfp.chain || '';
 
   const rating = (pfp.ratingAvg || 0).toFixed(1);
   const chain = pfp.chain || '';
@@ -139,7 +140,7 @@ async function quickVote(pfpId, type) {
 // Chain filter for trending grid
 function filterChain(chain, btn) {
   currentChainFilter = chain;
-  document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.chain-tab,.leaderboard-tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
   loadTrendingByChain(chain);
 }

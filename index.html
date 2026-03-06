@@ -21,7 +21,7 @@
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 /* Nav */
-nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;position:relative}
 .nav-inner{max-width:1100px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-weight:800;font-size:1.2rem;color:var(--cyan)}
 .nav-logo span{color:var(--purple)}
@@ -195,16 +195,32 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
 .referral-stats strong{color:var(--text)}
 /* Chain badge colors */
 .chain-BTC{color:#ff9900}.chain-ETH{color:#6370ff}.chain-SOL{color:#9945ff}.chain-art{color:var(--cyan)}
+/* Hamburger */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
 @media(max-width:768px){
   .footer-inner{grid-template-columns:1fr 1fr}
   .hiw-arrow{display:none}
   .pfp-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
-  .nav-links li:not(:last-child){display:none}
+  .nav-hamburger{display:flex}
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:rgba(10,10,15,.98);border-bottom:1px solid var(--border);flex-direction:column;padding:12px 20px;gap:4px;z-index:200}
+  .nav-links.open{display:flex}
+  .nav-links li{display:block!important}
+  .nav-links a{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);display:block;font-size:.95rem}
+  .nav-links li:last-child a{border-bottom:none}
+  .referral-card{flex-direction:column}
+  .upload-section{padding:0 12px}
 }
 @media(max-width:480px){
   .footer-inner{grid-template-columns:1fr}
   .stat-row{gap:20px}
   .pfp-grid{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:40px 16px 30px}
+  h1.hero-h1{font-size:2.2rem}
+  .chain-selector{flex-wrap:wrap}
+  .chain-btn{min-width:60px;padding:8px 10px}
+  .aff-grid{grid-template-columns:1fr}
+  .empire-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -239,6 +255,9 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo">pfp<span>.best</span></a>
+    <button class="nav-hamburger" onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
     <ul class="nav-links">
       <li><a href="/" class="active">Home</a></li>
       <li><a href="pages/leaderboard.html">Leaderboard</a></li>
@@ -633,17 +652,7 @@ setInterval(syncHeroCount,2000);
 })();
 
 
-// ─── Chain filter ───────────────────────────────────────────────
-var _activeChain = 'all';
-window.filterChain = function(chain, btn) {
-  _activeChain = chain;
-  document.querySelectorAll('.chain-tab').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  document.querySelectorAll('.pfp-card').forEach(function(card) {
-    var c = card.dataset.chain || 'all';
-    card.style.display = (chain === 'all' || c === chain || c === '') ? '' : 'none';
-  });
-};
+// filterChain is handled by app.js — no override needed
 
 // ─── PFP Modal close ────────────────────────────────────────────
 window.closeModal = function() {
