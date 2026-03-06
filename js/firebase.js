@@ -141,14 +141,14 @@ async function ratePfp(pfpId, rating) {
   const fp = getFingerprint();
   const ratingKey = `${pfpId}_${fp}`;
 
-  // Try to read existing rating for de-dup (rules may block this — that's ok)
+  // Try to read existing rating for de-dup
   let oldRating = null;
   try {
     const existing = await ratingsRef.child(ratingKey).once('value');
     oldRating = existing.val();
   } catch (_) { /* PERMISSION_DENIED — treat as new rating */ }
 
-  // Save rating (write rules allow this)
+  // Save rating
   await ratingsRef.child(ratingKey).set({
     pfpId,
     rating,
@@ -156,20 +156,27 @@ async function ratePfp(pfpId, rating) {
     timestamp: firebase.database.ServerValue.TIMESTAMP
   });
 
-  // Update PFP aggregate
-  await pfpsRef.child(pfpId).transaction(pfp => {
+  // Update PFP aggregate using .update() on sub-fields (rules block transaction() on parent)
+  try {
+    const snap = await pfpsRef.child(pfpId).once('value');
+    const pfp = snap.val();
     if (pfp) {
+      let ratingSum, ratingCount;
       if (oldRating && oldRating.rating) {
-        pfp.ratingSum = (pfp.ratingSum || 0) - oldRating.rating + rating;
+        ratingSum = (pfp.ratingSum || 0) - oldRating.rating + rating;
+        ratingCount = pfp.ratingCount || 0;
       } else {
-        pfp.ratingSum = (pfp.ratingSum || 0) + rating;
-        pfp.ratingCount = (pfp.ratingCount || 0) + 1;
+        ratingSum = (pfp.ratingSum || 0) + rating;
+        ratingCount = (pfp.ratingCount || 0) + 1;
       }
-      pfp.ratingAvg = pfp.ratingCount > 0 ? pfp.ratingSum / pfp.ratingCount : 0;
-      pfp.score = calculateScore(pfp);
+      const ratingAvg = ratingCount > 0 ? ratingSum / ratingCount : 0;
+      const score = calculateScore({ ...pfp, ratingSum, ratingCount, ratingAvg });
+      await pfpsRef.child(pfpId).update({ ratingSum, ratingCount, ratingAvg, score });
     }
-    return pfp;
-  });
+  } catch (err) {
+    console.error('[ratePfp] update failed:', err);
+    throw err;
+  }
 }
 
 // Upvote/downvote
@@ -177,7 +184,7 @@ async function votePfp(pfpId, type) {
   const fp = getFingerprint();
   const voteKey = `votes/${pfpId}_${fp}`;
 
-  // Try to read existing vote for de-dup (rules may block — that's ok)
+  // Try to read existing vote for de-dup
   let oldVote = null;
   try {
     const existing = await db.ref('pfpbest/' + voteKey).once('value');
@@ -188,16 +195,22 @@ async function votePfp(pfpId, type) {
 
   await db.ref('pfpbest/' + voteKey).set(type);
 
-  await pfpsRef.child(pfpId).transaction(pfp => {
+  // Update PFP aggregate using .update() on sub-fields (rules block transaction() on parent)
+  try {
+    const snap = await pfpsRef.child(pfpId).once('value');
+    const pfp = snap.val();
     if (pfp) {
-      if (oldVote === 'up') pfp.upvotes = Math.max(0, (pfp.upvotes || 0) - 1);
-      if (oldVote === 'down') pfp.downvotes = Math.max(0, (pfp.downvotes || 0) - 1);
-      if (type === 'up') pfp.upvotes = (pfp.upvotes || 0) + 1;
-      if (type === 'down') pfp.downvotes = (pfp.downvotes || 0) + 1;
-      pfp.score = calculateScore(pfp);
+      const upvotes = Math.max(0,
+        (pfp.upvotes || 0) + (type === 'up' ? 1 : 0) - (oldVote === 'up' ? 1 : 0));
+      const downvotes = Math.max(0,
+        (pfp.downvotes || 0) + (type === 'down' ? 1 : 0) - (oldVote === 'down' ? 1 : 0));
+      const score = calculateScore({ ...pfp, upvotes, downvotes });
+      await pfpsRef.child(pfpId).update({ upvotes, downvotes, score });
     }
-    return pfp;
-  });
+  } catch (err) {
+    console.error('[votePfp] update failed:', err);
+    throw err;
+  }
 }
 
 // Add comment
