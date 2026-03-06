@@ -231,7 +231,7 @@
       } finally {
         if (submitBtn && !submitBtn.textContent.includes('suspended')) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit PFP for Rating ⚡';
+          submitBtn.textContent = 'Submit for Rating';
         }
       }
     });

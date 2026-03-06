@@ -85,9 +85,9 @@ const Moderation = {
         scores
       };
     } catch (err) {
-      console.error('[Moderation] classify failed:', err);
-      // Fail closed on error
-      return { safe: false, reason: 'check_failed', scores: {} };
+      console.error('[Moderation] classify failed, allowing upload:', err);
+      // Model errors (CORS, memory, etc.) should not block legitimate uploads
+      return { safe: true, reason: 'moderation_unavailable', scores: {} };
     }
   }
 };
