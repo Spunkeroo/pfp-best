@@ -203,62 +203,78 @@ async function openPfpModal(pfpId) {
   const comments = await getComments(pfpId);
   const rating = (pfp.ratingAvg || 0).toFixed(1);
   const chain = pfp.chain || '';
-  const safeModalChain = escapeHtml(chain);
-  const chainLabel = chain ? `<span class="pfp-card-chain chain-${escapeHtml(chain.toLowerCase())}" style="position:static;display:inline-block;margin-right:6px;">${safeModalChain}</span>` : '';
+  const chainLabel = chain
+    ? `<span class="pfp-card-chain chain-${escapeHtml(chain.toLowerCase())}" style="position:static;display:inline-block;margin-right:6px;">${escapeHtml(chain)}</span>`
+    : '';
 
   const modalBody = modal.querySelector('.modal-body');
+
+  // Build HTML with NO inline event handlers — wire up listeners below
   modalBody.innerHTML = `
     <div class="modal-pfp-image">
-      <img src="${pfp.imageUrl}" alt="${escapeHtml(pfp.title || 'PFP')}" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${pfpId}'">
+      <img id="modal-pfp-img" alt="${escapeHtml(pfp.title || 'PFP')}">
     </div>
-
-    <h3 style="text-align:center; margin-bottom:8px;">${escapeHtml(pfp.title || 'Untitled PFP')}</h3>
-    <p style="text-align:center; color:var(--text-muted); margin-bottom:20px; font-size:0.85rem;">
-      ${chainLabel} ${escapeHtml(pfp.category || 'other')} · ${pfp.ratingCount || 0} ratings · ${(pfp.upvotes || 0) - (pfp.downvotes || 0)} net votes
+    <h3 style="text-align:center;margin-bottom:8px;">${escapeHtml(pfp.title || 'Untitled PFP')}</h3>
+    <p style="text-align:center;color:var(--muted);margin-bottom:20px;font-size:0.85rem;">
+      ${chainLabel}${escapeHtml(pfp.category || 'other')} · <span id="modal-rating-count">${pfp.ratingCount || 0}</span> ratings · ${(pfp.upvotes || 0) - (pfp.downvotes || 0)} net votes
     </p>
-
     <div class="rating-stars" id="modal-stars">
-      ${[1,2,3,4,5,6,7,8,9,10].map(i => `<span class="star" data-rating="${i}" onclick="submitRating('${pfpId}', ${i})">★</span>`).join('')}
+      ${[1,2,3,4,5,6,7,8,9,10].map(i => `<span class="star" data-rating="${i}">★</span>`).join('')}
     </div>
-    <div class="rating-avg">Average: <strong>${rating}/10</strong></div>
-
+    <div class="rating-avg">Average: <strong id="modal-rating-avg">${rating}/10</strong></div>
     <div class="vote-buttons">
-      <button class="vote-btn vote-btn-up" onclick="modalVote('${pfpId}', 'up')">
-        ▲ Upvote <span id="modal-upvotes">${pfp.upvotes || 0}</span>
-      </button>
-      <button class="vote-btn vote-btn-down" onclick="modalVote('${pfpId}', 'down')">
-        ▼ Downvote <span id="modal-downvotes">${pfp.downvotes || 0}</span>
-      </button>
+      <button class="vote-btn vote-btn-up" id="modal-vote-up">▲ Upvote <span id="modal-upvotes">${pfp.upvotes || 0}</span></button>
+      <button class="vote-btn vote-btn-down" id="modal-vote-down">▼ Downvote <span id="modal-downvotes">${pfp.downvotes || 0}</span></button>
     </div>
-
     <div class="comments-section">
-      <h4>Roasts & Comments (${comments.length})</h4>
+      <h4>Roasts & Comments (<span id="modal-comment-count">${comments.length}</span>)</h4>
       <div class="comment-input-wrap">
-        <input type="text" id="comment-input" placeholder="Drop a roast or comment..." maxlength="280" onkeydown="if(event.key==='Enter')submitComment('${pfpId}')">
-        <button onclick="submitComment('${pfpId}')">Post</button>
+        <input type="text" id="comment-input" placeholder="Drop a roast or comment..." maxlength="280">
+        <button id="comment-submit">Post</button>
       </div>
       <div class="comment-list" id="comment-list">
-        ${comments.map(c => `
-          <div class="comment-item">
-            ${escapeHtml(c.text)}
-            <div class="comment-time">${timeAgo(c.timestamp)}</div>
-          </div>
-        `).join('')}
-        ${comments.length === 0 ? '<p style="color:var(--text-muted); text-align:center; padding:16px;">No comments yet. Be the first to roast!</p>' : ''}
+        ${comments.map(c => `<div class="comment-item">${escapeHtml(c.text)}<div class="comment-time">${timeAgo(c.timestamp)}</div></div>`).join('')}
+        ${comments.length === 0 ? '<p style="color:var(--muted);text-align:center;padding:16px;">No comments yet. Be the first to roast!</p>' : ''}
       </div>
     </div>
-
-    ${typeof AIRater !== 'undefined' ? renderAiRaterButton(pfpId, pfp.chain || 'Art') : ''}
-
+    ${typeof AIRater !== 'undefined' ? `<div class="ai-rate-section" id="ai-rate-${pfpId}"><button class="ai-rate-btn" id="ai-rate-btn">🤖 Get AI Rating</button></div>` : ''}
     <div class="share-buttons">
-      <button class="share-btn share-btn-x" onclick="ShareCard.shareToX(currentModalPfp)">
-        𝕏 Share on X
-      </button>
-      <button class="share-btn share-btn-copy" onclick="ShareCard.copyLink('${pfpId}')">
-        📋 Copy Link
-      </button>
+      <button class="share-btn share-btn-x" id="modal-share-x">𝕏 Share on X</button>
+      <button class="share-btn share-btn-copy" id="modal-share-copy">📋 Copy Link</button>
     </div>
   `;
+
+  // Set image src directly — never put base64 in innerHTML
+  const modalImg = document.getElementById('modal-pfp-img');
+  if (modalImg) {
+    modalImg.src = pfp.imageUrl;
+    modalImg.onerror = function() { this.src = 'https://api.dicebear.com/7.x/shapes/svg?seed=' + pfpId; };
+  }
+
+  // Wire up all event listeners — no inline onclick
+  modalBody.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => submitRating(pfpId, parseInt(star.dataset.rating, 10)));
+  });
+
+  const voteUp = document.getElementById('modal-vote-up');
+  if (voteUp) voteUp.addEventListener('click', () => modalVote(pfpId, 'up'));
+
+  const voteDown = document.getElementById('modal-vote-down');
+  if (voteDown) voteDown.addEventListener('click', () => modalVote(pfpId, 'down'));
+
+  const commentInput = document.getElementById('comment-input');
+  const commentSubmit = document.getElementById('comment-submit');
+  if (commentInput) commentInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitComment(pfpId); });
+  if (commentSubmit) commentSubmit.addEventListener('click', () => submitComment(pfpId));
+
+  const shareX = document.getElementById('modal-share-x');
+  if (shareX) shareX.addEventListener('click', () => ShareCard.shareToX(pfp));
+
+  const shareCopy = document.getElementById('modal-share-copy');
+  if (shareCopy) shareCopy.addEventListener('click', () => ShareCard.copyLink(pfpId));
+
+  const aiBtn = document.getElementById('ai-rate-btn');
+  if (aiBtn) aiBtn.addEventListener('click', () => runAiRating(pfpId, pfp.chain || 'Art'));
 
   window.currentModalPfp = pfp;
   modal.classList.add('active');
@@ -272,14 +288,29 @@ function closeModal() {
 }
 
 async function submitRating(pfpId, rating) {
+  // Highlight stars immediately for visual feedback
+  document.querySelectorAll('#modal-stars .star').forEach((star, i) => {
+    star.classList.toggle('active', i < rating);
+  });
   try {
     await ratePfp(pfpId, rating);
-    document.querySelectorAll('#modal-stars .star').forEach((star, i) => {
-      star.classList.toggle('active', i < rating);
-    });
-    showToast(`Rated ${rating}/10!`, 'success');
+    // Update displayed average optimistically
+    const pfp = window.currentModalPfp;
+    if (pfp) {
+      const newCount = (pfp.ratingCount || 0) + 1;
+      const newSum = (pfp.ratingSum || 0) + rating;
+      const newAvg = (newSum / newCount).toFixed(1);
+      const avgEl = document.getElementById('modal-rating-avg');
+      if (avgEl) avgEl.textContent = `${newAvg}/10`;
+      const countEl = document.getElementById('modal-rating-count');
+      if (countEl) countEl.textContent = newCount;
+      pfp.ratingSum = newSum;
+      pfp.ratingCount = newCount;
+      pfp.ratingAvg = parseFloat(newAvg);
+    }
+    showToast(`Rated ${rating}/10! ⭐`, 'success');
   } catch (err) {
-    showToast('Rating failed', 'error');
+    showToast('Rating failed — try again', 'error');
   }
 }
 
@@ -435,6 +466,13 @@ async function loadCategoryPfps(category) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  // Wire up modal close button and overlay click — no inline onclick needed
+  const pfpModal = document.getElementById('pfp-modal');
+  const closeBtnEl = document.getElementById('modal-close-btn');
+  if (closeBtnEl) closeBtnEl.addEventListener('click', closeModal);
+  if (pfpModal) pfpModal.addEventListener('click', e => { if (e.target === pfpModal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
   loadTrending();
   loadPfpOfDay();
   loadNewestPfps();

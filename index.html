@@ -14,7 +14,7 @@
 <meta name="twitter:site" content="@SpunkArt13">
 <link rel="canonical" href="https://pfp.best/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com https://firebasestorage.googleapis.com https://nsfwjs.com https://cdn.jsdelivr.net; frame-ancestors 'none';">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0f;--card:#1a1a2e;--border:#2a2a4e;--purple:#bf5af2;--cyan:#00f5d4;--gold:#ffd60a;--green:#32d74b;--text:#e8e8f0;--muted:#888}
@@ -229,11 +229,11 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
 <div id="vtr-badge"><div id="vtr-dot"></div><span id="vtr-count">—</span> online</div>
 
 <!-- PFP Modal -->
-<div class="modal-overlay" id="pfp-modal" onclick="if(event.target===this)closeModal()">
+<div class="modal-overlay" id="pfp-modal">
   <div class="modal-content">
     <div class="modal-header">
       <h3>Rate this PFP</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" id="modal-close-btn">✕</button>
     </div>
     <div class="modal-body"></div>
   </div>
@@ -691,16 +691,7 @@ setInterval(syncHeroCount,2000);
 })();
 
 
-// filterChain is handled by app.js — no override needed
-
-// ─── PFP Modal close ────────────────────────────────────────────
-window.closeModal = function() {
-  var m = document.getElementById('pfp-modal');
-  if (m) m.classList.remove('active');
-};
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') window.closeModal();
-});
+// filterChain and closeModal handled by app.js
 
 </script>
 </body>
