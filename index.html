@@ -525,6 +525,7 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:40px 20
     card.onclick = function() { if (typeof openPfpModal === 'function') openPfpModal(pfp.id); };
 
     var chain = pfp.chain || '';
+    card.dataset.chain = chain || 'all';
     var chainColor = {BTC:'#ff9900',ETH:'#6370ff',SOL:'#9945ff',art:'#00f5d4'}[chain] || '#888';
     var title = (pfp.title || 'Untitled PFP').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     var rating = (pfp.ratingAvg || 0).toFixed(1);
@@ -631,6 +632,27 @@ setInterval(syncHeroCount,2000);
   ping();refresh();daily();setInterval(function(){ping();refresh();},10000);
 })();
 
+
+// ─── Chain filter ───────────────────────────────────────────────
+var _activeChain = 'all';
+window.filterChain = function(chain, btn) {
+  _activeChain = chain;
+  document.querySelectorAll('.chain-tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.pfp-card').forEach(function(card) {
+    var c = card.dataset.chain || 'all';
+    card.style.display = (chain === 'all' || c === chain || c === '') ? '' : 'none';
+  });
+};
+
+// ─── PFP Modal close ────────────────────────────────────────────
+window.closeModal = function() {
+  var m = document.getElementById('pfp-modal');
+  if (m) m.classList.remove('active');
+};
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') window.closeModal();
+});
 // Tip copy
 function copyTip(){var a=document.getElementById('tipAddr').textContent;navigator.clipboard.writeText(a).catch(function(){});document.getElementById('tipAddr').textContent='✓ Copied!';setTimeout(function(){document.getElementById('tipAddr').textContent=a;},2000);}
 </script>
