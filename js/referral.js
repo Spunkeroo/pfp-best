@@ -11,7 +11,8 @@
     const urlEl = document.getElementById('referral-url');
     if (!urlEl) return;
     const ref = `${window.location.origin}${window.location.pathname}?ref=${fp}`;
-    urlEl.value = ref;
+    urlEl.textContent = ref;
+    urlEl.title = ref;
 
     const copyBtn = document.getElementById('referral-copy');
     if (copyBtn) {
