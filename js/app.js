@@ -27,6 +27,7 @@ function makePfpCardEl(pfp, rank) {
   const card = document.createElement('div');
   card.className = 'pfp-card';
   card.dataset.id = pfp.id;
+  card.dataset.pfpId = pfp.id;
   card.dataset.chain = pfp.chain || '';
 
   const rating = (pfp.ratingAvg || 0).toFixed(1);
@@ -127,11 +128,30 @@ function renderPfpCard(pfp, rank) {
   `;
 }
 
-// Quick vote from card
+// Quick vote from card — updates count in-place after voting
 async function quickVote(pfpId, type) {
   try {
     await votePfp(pfpId, type);
-    showToast(type === 'up' ? 'Upvoted! ▲' : 'Downvoted! ▼', 'success');
+    // Re-read the updated PFP data and refresh the vote counts on all matching cards
+    const snap = await pfpsRef.child(pfpId).once('value');
+    const pfp = snap.val();
+    if (pfp) {
+      // Update inline onclick cards
+      document.querySelectorAll(`[onclick*="quickVote('${pfpId}', 'up')"]`).forEach(el => {
+        el.textContent = '\u25B2 ' + (pfp.upvotes || 0);
+      });
+      document.querySelectorAll(`[onclick*="quickVote('${pfpId}', 'down')"]`).forEach(el => {
+        el.textContent = '\u25BC ' + (pfp.downvotes || 0);
+      });
+      // Update DOM-created cards (data-pfp-id attribute)
+      document.querySelectorAll(`[data-pfp-id="${pfpId}"] .vote-up`).forEach(el => {
+        el.textContent = '\u25B2 ' + (pfp.upvotes || 0);
+      });
+      document.querySelectorAll(`[data-pfp-id="${pfpId}"] .vote-down`).forEach(el => {
+        el.textContent = '\u25BC ' + (pfp.downvotes || 0);
+      });
+    }
+    showToast(type === 'up' ? 'Upvoted! \u25B2' : 'Downvoted! \u25BC', 'success');
   } catch (err) {
     showToast('Vote failed', 'error');
   }
