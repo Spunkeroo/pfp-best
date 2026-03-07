@@ -137,21 +137,21 @@ const ShareCard = {
 
   async shareToX(pfp, topComment) {
     const rating = (pfp.ratingAvg || 0).toFixed(1);
-    const text = `My PFP got rated ${rating}/10 on pfp.best! 🔥\n\n${topComment ? `Top roast: "${topComment.slice(0, 80)}"\n\n` : ''}Rate yours 👉 pfp.best/p/${pfp.id}`;
+    const text = `My PFP got rated ${rating}/10 on pfp.best! 🔥\n\n${topComment ? `Top roast: "${topComment.slice(0, 80)}"\n\n` : ''}Rate yours 👉 pfp.best/#pfp/${pfp.id}`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'width=550,height=420');
   },
 
   copyDiscordEmbed(pfp) {
     const rating = (pfp.ratingAvg || 0).toFixed(1);
-    const text = `**My PFP got rated ${rating}/10!** ⭐\nRate yours: https://pfp.best/p/${pfp.id}`;
+    const text = `**My PFP got rated ${rating}/10!** ⭐\nRate yours: https://pfp.best/#pfp/${pfp.id}`;
     navigator.clipboard.writeText(text).then(() => {
       showToast('Copied for Discord!', 'success');
     });
   },
 
   copyLink(pfpId) {
-    const url = `https://pfp.best/p/${pfpId}`;
+    const url = `https://pfp.best/#pfp/${pfpId}`;
     navigator.clipboard.writeText(url).then(() => {
       showToast('Link copied!', 'success');
     });
